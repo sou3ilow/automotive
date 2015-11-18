@@ -27,7 +27,7 @@
             companyURL: "http://www.jaguarlandrover.com/"              
           }, {
             name: "Justin (Jong Seon) Park", company: "LG Electronics",
-            url: "mailto:wonsuk.lee@etri.re.kr",
+            url: "mailto:jongseon.park@lge.com",
             companyURL: "http://www.lg.co.kr/"              
           }, {
             name: "Kevron Rees (until November 2014)", company: "Intel",
@@ -365,19 +365,31 @@
      <dd>MUST return whether this attribute is available for get() or not</dd>
      <dt>readonly attribute boolean supported</dt>
      <dd>MUST return true if this attribute is supported and available</dd>
-     <dt>short availabilityChangedListener( AvailableCallback callback )</dt>
+     <dt>short availabilityChangedListener(DOMString attributeName, AvailableCallback callback)</dt>
      <dd>MUST return handle for listener.</dd>
      <dt>void removeAvailabilityChangedListener( short handle )</dt>
    </dl>
 
    <pre class="example highlight">
    var speedAvailability = vehicle.vehicleSpeed.availableForRetrieval("speed");
-   
+
    if (speedAvailability === "available") {
-     console.log("Vehicle speed available for use");
+     checkVehicleSpeed();
+   }
+   else if (speedAvailability === "not_supported_yet") {
+     vehicle.vehicleSpeed.availabilityChangedListener("speed", function (available) {
+       speedAvailability = available;
+       if (speedAvailability === "available") {
+         checkVehicleSpeed();
+       }
+     });
    }
    else {
      console.log("Vehicle speed unavailable: " + speedAvailability);
+   }
+
+   function checkVehicleSpeed() {
+     vehicle.vehicleSpeed.get().then(callback);
    }
    </pre>
 
@@ -390,18 +402,18 @@
 
    <pre class="example highlight">
    var speedSubscribable = vehicle.vehicleSpeed.availableForSubscription("speed") === "available";
+   var vehicleSpeedSub = null;
 
-   vehicle.vehicleSpeed.availabilityChangedListener(function (available) {
-     speedSubscribable = available === "available";
-     checkVehicleSpeed();
-   });
-
-   function checkVehicleSpeed() {
-     if (speedSubscribable) {
-       vehicle.vehicleSpeed.get().then(callback);
-     }
+   if (speedSubscribable) {
+     vehicleSpeedSub = vehicle.vehicleSpeed.subscribe(function (vehicleSpeed) {
+       console.log("Vehicle speed changed to: " + vehicleSpeed.speed);
+       vehicle.vehicleSpeed.unsubscribe(vehicleSpeedSub);
+     });
    }
-  </pre>
+   else {
+     console.log("Vehicle speed subscription unavailable: " + speedSubscribable);
+   }
+   </pre>
 
 </section>
 <!-- History -->
