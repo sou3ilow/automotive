@@ -695,8 +695,8 @@ Moreover, an implementer may considers users benefit and would like to expose so
 only to certain organizations or authorized contents. Here are some best practice to realize such access control.
 
 <ol>
-	<li class=j> IVIがnative applicatinoをサポートするのであれば
-	NativeOSのパーミッションモデル、NativeOSでのマーケットシステムを利用することにより、APIの利用を制限することができる。
+	<li class=j> IVIがネイティブアプリケーションをサポートするのであれば
+	Native OSのパーミッションモデル、Native OSでのマーケットシステムを利用することにより、APIの利用を制限することができる。
 	<li class=e> If IVI supports native application,
 	permission model of native OS and a market system for the OS could be utilized to reject suspicious applications.
 
@@ -710,11 +710,15 @@ only to certain organizations or authorized contents. Here are some best practic
 	問題があると判断されたVehicle APIの呼び出しをサニタイズすることができる。
 	<li class=e> IVI could obtain sanitized code by running a web-proxy server inside of IVI and passing all data throw the proxy.
 
-	<li class=e> If the API is implemented as a polyfill and it communicate with <i>local</i> web server, the web server
+	<li class=j> APIがポリフィルとして実装され、それがローカルのWebサーバと通信する場合、そのWebサーバは
+	<a href="#biblio-oauth">[OAuth]</a> で利用されるHTTPヘッダを使ってリクエストをフィルタすることができる。
+	<li class=e> If the API is implemented as a polyfill and it communicates with <i>local</i> web server, the web server
 	could filter requests by a specific HTTP header that is used in
 	<a href="#biblio-oauth">[OAuth]</a> framework
 	
-	<li class=e> If the API is implemented as a polyfill and it communicate with <i>cloud</i> web server, the web server
+	<li class=j> APIがポリフィルとして実装され、それがローカルのWebサーバと通信する場合、そのWebサーバは
+	could filter requests by the <a href="#biblio-cors">[CORS]</a> を利用してリクエストをフィルタすることができる。
+	<li class=e> If the API is implemented as a polyfill and it communicates with <i>cloud</i> web server, the web server
 	could filter requests by the <a href="#biblio-cors">[CORS]</a> framework.
 </ol>
 
