@@ -149,6 +149,7 @@
   </head>
 <body>
 
+<!-- ------------------------------------------------------------------------ -->
 <section id='abstract'>
 <p> Hit 't' to change languages. </p>
 
@@ -174,23 +175,105 @@ and Vehicle Information Service Specification
 This document imagines an IVI (In-Vehicle Infotainment system), 
 presents typical architectures, recommendation to be referred and privacy protection.
 It also describes best practices of restricting API use for specific developers.
+
+<!--
+	SafetyとSecurityについて記載しておきたい。
+-->
+<p class=j>
+なお、本項は網羅的なリスク評価を行うものではないことに留意する。例えば車とサーバの間の通信が偽装された結果、
+人的被害が生じうる可能性については検討しない。
+
+<p class=e> ***
+
 </section>
 
 
+<!-- ------------------------------------------------------------------------ -->
 <section id='sotd'>
 </section>
 
+<!-- ------------------------------------------------------------------------ -->
 <section>
 <h2>
 	<span class=j>導入</span>
 	<span class=e>Introduction</span></h2>
+
+<!-- APIの用途はIVIである。-->
 <p class=j>
-Vehicle APIsは乗用車のIVI (In-Vehicle Infortainment System)に実装されることを想定して策定されている。
+Automotive WGは乗用車のIVI(In-Vehicle Infortinment System)への実装を想定して、
+Vehicle Access API,
+Vehicle Data Specification,
+Vehilce Information Service Specificationを策定した。
+
+これらのAPIは車に直接アクセスするInterfaceではないが、間接的にセンサデータを取得したり
+制御のリクエストを行う方法を規定している。
+
+PC向けではないこれらのAPIに特有の課題を調査・検討するためにSecurity &amp; Privacy タスクフォースが
+設置された。
+
+この文書はその結果をまとめたものである。
+
+<!-- 章構成 -->
+<p class=j>
+車にとって最も大切なことは利用者の安全であり、Vehicle APIsやそれが実装されたIVIが
+この安全性を損ねるものであってはならない。
+
+そのため、この文書はAPIの実装にかぎらず、IVIの構成自体にも言及することになった。
+
+Section 2ではタスクフォースが収集した、APIのユースケースと懸念点についてのべ、抽出された６つの課題を紹介する。
+Section 3ではIVIの構成や、置かれる環境、Web Runtimeとアプリケーションの関係についてモデルを示す。
+Section 4では標準的に利用されていて、車向けのIVIにも導入すべき基本的なWebのセキュリティ技術について述べる。
+Section 5では最初に抽出した6つの課題について、検討する。
+
+<!-- Safety & Security -->
+<p class=j>
+この文章は、セキュリティとプライバシ上の懸念について取り扱い、解決の方向を提示する。
+一方でリスクの評価を提供したり、この文書に従うことで問題が解決することを保証したりするものではない。
+詳細なリスクの評価は実装者に委ねられており、不明な場合は安全な側に倒すことを推奨する。
+
+また、IVIのハードウェア要件や、全体の設計を提供することも行わない。
+そういった観点では、以下に示す規格を参照することを進める。
+
+<p class=e>
+*****
+
+This document is on security and privacy topic around Vehicle APIs. As for other topics, IVI developers
+are encouraged to refer appropriate specifications:
+
+****
+
+<ul>
+	<li><span class=j> [[ISO26262]]
+   	は自動車の電気・電子に関する機能安全についての国際規格である。
+	IVIは車システムの一部として正常に動作しなくてはならない</span>
+	<span class=e> [[ISO26262]]
+	is an international standard for functional safety of electronic system in automobiles.
+	As a part of an automobile IVI must function well</span>
+	<li> <span class=j> [[ISO/IEC15408]]
+   	は通称CCと呼ばれる、コンピュータ・セキュリティのための国際規格である。
+	IVIは情報システムとして、不正な利用を排除しなくてはならない。 </span>
+	<li> <span class=e> [[ISO/IEC15408]]
+	known as Common Criteria, is an international standard for computer security.
+	As an information processor IVI must reject illegal access.</span>
+	<ul class=j>
+		<li> 乗用車においてはドライバーを同規格における第一のユーザとみなすべきである。
+		<li> 所有者、同乗者もまたユーザーとみなすことができるが、現時点でVehicle APIはそのような概念をサポートしない。
+	</ul>
+	<ul class=e>
+		<li> Driver of a passenger car would be treated as the primary user of a system in this specification.
+		<li> Although owner and passengers can be considered as users at the same time, 
+		current Vehicle APIs do not support such a concept.
+	</ul>
+</ul>
+
+
+<!--
 その実装にあたってはPC上のブラウザとは異なり下記の点に留意されなくてはならない。
 
 <p class=e>
 Vehicle APIs are supposed to be implemented on an IVI (In-Vehicle Infotainment System) for passenger automobiles.
 Compared to browsers on desktop PCs, particular attention should be given to following points.
+
 
 <ol class=j>
 	<li> ドライバー・同乗者が安全であること。
@@ -213,41 +296,9 @@ Compared to browsers on desktop PCs, particular attention should be given to fol
 To satisfy these purposes, web-runtime and as well as its environment should also be designed carefully. 
 Therefor this document describes architectures of IVI and connection among IVI and CAN (Car Area Network),
 and refers to server-side security and privacy on emergent situation.
+-->
 
-
-
-<p class=j>
-この文書はVehicle APIsに周辺のセキュリティー・プライバシーのトピックを扱うが、
-その他の部分について、IVIの開発者は別の適切な文書を参照することを勧める。
-
-<p class=e>
-This document is on security and privacy topic around Vehicle APIs. As for other topics, IVI developers
-are encouraged to refer appropriate specifications:
-
-<ul>
-	<li class=j> [[ISO26262]]
-   	は自動車の電気・電子に関する機能安全についての国際規格である。
-	IVIは車システムの一部として正常に動作しなくてはならない
-	<li class=e> [[ISO26262]]
-	is an international standard for functional safety of electronic system in automobiles.
-   	As a part of an automobile IVI must function well
-	<li class=j> [[ISO/IEC15408]]
-   	は通称CCと呼ばれる、コンピュータ・セキュリティのための国際規格である。
-	IVIは情報システムとして、不正な利用を排除しなくてはならない。
-	<li class=e> [[ISO/IEC15408]]
-	known as Common Criteria, is an international standard for computer security.
-   	As an information processor IVI must reject illegal access.
-	<ul class=j>
-		<li> 乗用車においてはドライバーを同規格における第一のユーザとみなすべきである。
-		<li> 所有者、同乗者もまたユーザーとみなすことができるが、現時点でVehicle APIはそのような概念をサポートしない。
-	</ul>
-	<ul class=e>
-		<li> Driver of a passenger car would be treated as the primary user of a system in this specification.
-		<li> Although owner and passengers can be considered as users at the same time, 
-		current Vehicle APIs do not support such a concept.
-	</ul>
-</ul>
-
+<!-- ------------------------------------------------------------------------ -->
 <section>
 <h3>
 	<span class=j>文書規約</span>
@@ -296,67 +347,92 @@ explicitly marked as non-normative, examples, and notes. [[!RFC2119]]</p>
 </section>
 </section>
 
+<!-- ------------------------------------------------------------------------ -->
 <section>
 
 <h2>
-	<span class=j>ユースケース</span>
-	<span class=e>Use cases</span></h2>
+	<span class=j>ユースケースと課題</span>
+	<span class=e>Use casesと課題</span></h2>
+
+<p class=j> この章は非規範的である。 <!-- それでいいのか -->
+<p class=e> This section is non-nomartive***.
 
 <p class=j>
-この章は非規範的である。
+ワーキング・グループではVehicle APIsの策定に際し、将来的な拡張を含めどのようなユースケースが想定され、
+また懸念される事項が何か調査を行った。以下に幾つかの例を挙げる。
 
-<p class=j>
-Vehicle APIはInvehicle Infortainment への利用を想定しており、
-将来的な拡張を含め、想定するユースケースや懸念には次のようなものが含まれている。
-
-（列挙する必要あるのか？）
-
-
-<p class=j>
-これらを整理した結果、Vehicle APIを利活用にあたり、これまでのDOM APIとは異なる特有の課題がはっきりした。
-
+<p class=e>
+***
 
 <ol class=j>
-	<li>マルウェアの侵入の検知と対策</li>
-	<li>値を設定するメソッドへの対応</li>
-	<li>通信問題 </li>
-	<li>ユーザの権利 </li>
-	<li>複数のドライバー、ユーザー</li>
+	<li>（列挙する必要あるのか？）
+	<li>（列挙する必要あるのか？）
+	<li>（列挙する必要あるのか？）
+	<li>（列挙する必要あるのか？）
+</ol>
+
+<ol class=e>
+	<li>（列挙する必要あるのか？）
+	<li>（列挙する必要あるのか？）
+	<li>（列挙する必要あるのか？）
+	<li>（列挙する必要あるのか？）
 </ol>
 
 <p class=j>
-これらの課題はIVI全体の設計を含めて解決してゆく必要がある。
+これらを整理した結果、5つの課題が抽出され、その解決方法はUser Agentだけではなく
+IVI全体として解決してゆく必要が有ることがはっきりした。
 詳細は、後ろの章に譲るが、それぞれの課題についての基本的な方向性について述べておく。
 
-<!--Safety & Security-->
-なお、本項は網羅的なリスク評価を行うものではないことに留意する。例えば車とサーバの間の通信が偽装された結果、
-人的被害が生じうる可能性については検討しない。
+<p class=e> ***
 
-<p class=j>
-マルウェアの侵入検知について、APIレベルでは同一生成元ポリシーに則った処置を行う。
-ネイティブアプリについてはプラットフォームでの対応が必要であり、特にアップデートが重要である。
+<ol>
+	<li>
+	<span class=j>マルウェアの侵入の検知と対策</span>
+	<span class=e>********</span>
+	</li>
+	<p class=j>
+	マルウェアの侵入検知について、APIレベルでは同一生成元ポリシーに則った処置を行う。
+	ネイティブアプリについてはプラットフォームでの対応が必要であり、特にアップデートが重要である。
 
-<p class=j>
-値の設定は特にHVACなどについて要求の強い事項であるが、駆動系などへのアクセスは許容すべきでないとの見解がある。
-APIはインターフェースを規定しつつ、サービスを提供しない方法を定めており、これを利用すべきである。
+	<li>
+	<span class=j>値を設定するメソッドへの対応</span>
+	<span class=e>********</span>
+	</li>
+	<p class=j>
+	値の設定は特にHVACなどについて要求の強い事項であるが、駆動系などへのアクセスは許容すべきでないとの見解がある。
+	APIはインターフェースを規定しつつ、サービスを提供しない方法を定めており、これを利用すべきである。
 
-<p class=j>
-プラットフォームからもたらされたデータが偽装されている可能性について、Vehicle APIは特に対策を
-提供していない。将来的に署名やメッセージ認証コードが付与されたデータが扱われる可能性については
-次のバージョン以降での議論となる。
+	<li>
+	<span class=j>通信問題</span>
+	<span class=e>****</span>
+	</li>
+	<p class=j>
+	プラットフォームからもたらされたデータが偽装されている可能性について、Vehicle APIは特に対策を
+	提供していない。将来的に署名やメッセージ認証コードが付与されたデータが扱われる可能性については
+	次のバージョン以降での議論となる。
 
-<p class=j>
-車から得られるデータはプライベートなものである可能性があり、扱いには注意を要する。
-緊急時を含め、サービス提供者に求められる注意点を述べる。
+	<li>
+	<span class=j>ユーザーの権利</span>
+	<span class=e>****</span>
+	</li>
+	<p class=j>
+	車から得られるデータはプライベートなものである可能性があり、扱いには注意を要する。
+	緊急時を含め、サービス提供者に求められる注意点を述べる。
 
-<p class=j>
-車には所有者と複数の利用者がおり、それぞれに合わせたプリファレンスを適用する必要がある。
-(具体的に？)
+	<li>
+	<span class=j>複数のドライバー、ユーザー</span>
+	<span class=e>****</span>
+	</li>
+	<p class=j>
+	車には所有者と複数の利用者がおり、それぞれに合わせたプリファレンスを適用する必要がある。
+	(具体的に？)
+</ol>
 
 
 </section>
 
 
+<!-- ------------------------------------------------------------------------ -->
 <section>
 <h2>
 	<span class=j>アーキテクチャ</span>
@@ -387,12 +463,6 @@ Vehicel Access APIはRuntimeとApp間のインターフェースを定めてい�
 
 
 <p class=j>
-
-
-
-
-
-
 
 
 <!--
@@ -530,6 +600,7 @@ Or a content may set only one data-point even when the content need to change mo
 
 </section>
 
+<!-- ------------------------------------------------------------------------ -->
 <section>
 <h2>
 	<span class=j>標準的なWeb Security技術の利用</span>
@@ -617,6 +688,7 @@ TCGが定める[[TPM]]はプログラムの署名を改竄が困難な形で実�
 
 </section>
 
+<!-- ------------------------------------------------------------------------ -->
 <section>
 <h2 id="privacy">
 	<span class=j>プライバシーの保護</span>
