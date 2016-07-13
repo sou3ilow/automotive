@@ -24,7 +24,7 @@
 		  wgPatentURI:  "http://www.w3.org/2004/01/pp-impl/424242/status",
 		  localBiblio: {
 			  "ISO26262": {
-				  title: "Road vehicles – Functional safety",
+				  title: "Road vehicles ? Functional safety",
 				  href: "http://www.iso.org/iso/catalogue_detail?csnumber=43464",
 				  authors: ["***author"],
 				  status: "***status",
@@ -195,7 +195,7 @@ It also describes best practices of restricting API use for specific developers.
 <!-- ------------------------------------------------------------------------ -->
 <section>
 <h2>
-	<span class=j>導入</span>
+	<span class=j>はじめに</span>
 	<span class=e>Introduction</span></h2>
 
 <!-- APIの用途はIVIである。-->
@@ -351,11 +351,8 @@ explicitly marked as non-normative, examples, and notes. [[!RFC2119]]</p>
 <section>
 
 <h2>
-	<span class=j>ユースケースと課題</span>
-	<span class=e>Use casesと課題</span></h2>
-
-<p class=j> この章は非規範的である。 <!-- それでいいのか -->
-<p class=e> This section is non-nomartive***.
+	<span class=j>APIのユースケース</span>
+	<span class=e>Use cases of APIs</span></h2>
 
 <p class=j>
 ワーキング・グループではVehicle APIsの策定に際し、将来的な拡張を含めどのようなユースケースが想定され、
@@ -426,6 +423,13 @@ IVI全体として解決してゆく必要が有ることがはっきりした�
 	<p class=j>
 	車には所有者と複数の利用者がおり、それぞれに合わせたプリファレンスを適用する必要がある。
 	(具体的に？)
+	
+	<li>
+	<span class=j>アクセスコントロール</span>
+	<span class=e>****</span>
+	</li>
+	<p class=j>
+	APIの利用許諾はユーザによるものと、ベンダーによるものがあり、特に後者をサポートしなくてはならない。
 </ol>
 
 
@@ -440,11 +444,24 @@ IVI全体として解決してゆく必要が有ることがはっきりした�
 </h2>
 
 <p class=j>
-本文書ではIVIがインターネットとCANの両方にアクセス可能な場所に設置されていると想定する。
+Vehicle APIが想定するIVIは図のように、インターネットとCAN(Car Area Network）の双方にアクセス
+可能である。
 
-<p class=e>
-****
+ほかのAPI同様、アプリケーションはインターネットから得られ、IVI上で実行される。
+アプリケーションはVehicle APIを通して車両の情報を取得する。
+アプリケーションはこれ以外の方法で車両にアクセスすることはできない。
 
+<p class=e>***
+
+
+
+<p class=j>
+IVIはベースとなるPlatform OSとその上でWebアプリを動作させるWebRutime(User agent)からなる。
+Vehicel Access APIはRuntimeとApp間のインターフェースを定めているが、
+プラットフォーム固有のフォーマットを持つアプリ（ネイティブアプリ）にも同様のデータを提供したい
+という期待からVehicle Signal APIの規定が進められている。
+
+<p class=e>***
 
 <center>
 <img 
@@ -453,13 +470,6 @@ IVI全体として解決してゆく必要が有ることがはっきりした�
 	alt="CAN - (X) - IVI - (Y)- Internet"></img>
 <br>
 </center>
-
-
-<p class=j>
-IVIはベースとなるPlatform OSとその上でWebアプリを動作させるWebRutime(User agent)からなる。
-Vehicel Access APIはRuntimeとApp間のインターフェースを定めているが、
-プラットフォーム固有のフォーマットを持つアプリ（ネイティブアプリ）にも同様のデータを提供したい
-という期待からVehicle Signal APIの規定が進められている。
 
 
 <p class=j>
@@ -477,68 +487,6 @@ and there should be certain filters at each intermediate.
 -->
 
 
-<p class=j>
-(X) CAN-IVI間のフィルタはIVIからCANに異常なシグナルが混入することを防止し、
-CANからIVIに不要な情報を送出しないようにしなくてはならない。
-
-<p class=e>
-(X) A filter between CAN and IVI must prevent abnormal signals from entering into CAN
-and pass minimal necessary information from CAN to IVI.
-
-<p class=j>
-(Y) IVIとInternetに設置するフィルタは、IVIを不正なアクセスから守り、
-Internet上の有害なコンテンツがIVIに持ち込まれることを防止する。
-これには様々なレイヤ・機能のものが考えられ、IVIの一部として実装することがふさわしい物もある。
-
-<p class=e>
-(Y) A filter between IVI and Internet protects IVI from unauthorized accesses and 
-deters malware infection.
-There are several approaches among layers and functions.
-Some of them might be appropriate to be implemented as a part of IVI rather than as an external filter.
-
-<ul class=j>
-	<li> プライベートなアドレスを与えるルーターは外部からのアクセスを困難にする
-	<li> ファイヤーウォールはIVIへのアクセスを必要最小限にする。
-	<li> URLフィルタは、与えられたURLリストへのアクセスを許可または拒否することで危険なサイトの閲覧を防止する。
-	<!--
-	<li> URLフィルタリング：フィッシング、マルウェアのインストールを促す、
-	スパムなどセキュリティ上問題のあるサイトはURLフィルタによりある程度
-	避けることができる。
-	URLのリストは公開されているものが利用可能。
-	-->
-	<li> Web proxy, ウイルスチェッカーを介することで、ダウンロードされるHTML/JS/CSS、その他のコンテンツを網羅的に走査、
-	サニタイズすることができる。
-</ul>
-
-<ul class=e>
-	<li> A network router that provides private IP addresses makes access difficult from outside.
-	<li> A firewall minimizes access to IVI.
-	<li> A URL filter looks for each access in a given URL list so that it prevents downloading malicious contents.
-	<li> Web-proxy/Anti-Virus software sanitizes downloaded HTML/JS/CSS and other data cyclopaedically.
-</ul>
-
-<p class=j>フィルタを通過し、不正なコードが内部に混入した場合に備え、IVIは下記の機能を持つことを検討すべきである。
-
-<p class=e>In a case that a malicious code come into inside of IVI by passing those filters,
-IVI should be considered to have following architecture/functionality.
-
-<ul class=j>
-	<li> セグメンテーション：ランタイムがVehicle APIを実行する場合に、そのリクエストが、
-	アプリケーションのパーミッション、APIの実行時パーミッション、など複数の段階でチェックを受けるように構成する。
-	<li> マルウェア、エクスプロイト検知とアプリケーションの停止： 異常な動作、要求を行うアプリケーションを停止する。
-	ルートを取得された端末は安全とはみなせないため、動作を停止する。
-	<!--
-	<li> メーカーによるアプリ制限*** => access controll
-	<li> ユーザによるアプリ制限 **** => Permission
-	-->
-</ul>
-
-<ul class=e>
-	<li> Segmentation: separates modules and enforces several checks before executing requests from web contents
-	by web-runtime. For instance, installation-time permission check and run-time permission check***.
-	<li> Malware/exploit detection and termination of application: terminates application that behaves suspiciously
-	or that sends abnormal requests. Rootized devices cannot seems to be secured so system should terminate itself.***
-</ul>
 
 <p class=j>IVIはこれまで個々のプラットフォーム上で開発されてきており、
 Vehicle APIを取り込んだIVIはスマートフォンに見られるように、
@@ -560,43 +508,6 @@ web-runtime inside of the app.
 </center>
 
 
-<p class=j>
-Vehicle APIsを含むW3C規格は、双方のモデルに含まれるWebContentとRuntimeの関係を重視し、
-正しいコンテンツがRuntimeの機能を正しく利用できることを要請する。
-IVIの安全性を考える場合は、RuntimeとOSとの関係がより重視される必要がある。
-その際の観点は下記の通りである。
-
-<p class=e>
-W3C specs including the Vehicle APIs attach much value on the relationship between WebContent and runtime in both models
-and require that an authorized content should have access runtime functions.
-While, considering IVI security, the relationship between runtime and operating system should be more taken care.
-Here are points***.
-
-<ul class=j>
-	<li> Vehille APIを経由したリクエストが複数のコンテンツから送らる際、リソースへの競合は適切に処理されるべきである。
-	<li> Vehicle APIの利用パーミッションはWebコンテンツごとに適切に管理されるべきである。
-</ul>
-
-<ul class=e>
-	<li> Even if several contents send request at the same time via Vehicle API,
-	resource race should be appropriately solved.
-	<li> Permission of Vehicle API for each Web Content should be managed independently.
-</ul>
-
-<p class=j>Vehicle Information Access APIが定めるget/set/subscribeのうち、setをサポートする場合、リソース競合の観点から
-慎重な設計が求められる。現在のSpecはデータポイントのロック機構をサポートしないため、
-少なくとも、「setを行うことのできるContentがIVI上でたかだか一つであること」を保証し無くてはならない。
-
-そうでない場合、一つのデータポイントに対し相反する2つの入力が与えられたり、
-2つののデータポイントを同時に操作するべき時に片方しか操作できないといった問題が生じうる。
-
-<p class=e>Vehicle Information Access API defines get/set/subscribe. 
-It requires careful design from the point of the resource race if an implementation supports the set method.
-Current spec doesn't support lock mechanism of data-point.
-Therefor system must ensure that at most only one content exists at the same time which is able to access set-methods.
-
-Otherwise one data-point may receive more than two contradict input.
-Or a content may set only one data-point even when the content need to change more than two data-point all together.
 
 </section>
 
@@ -690,10 +601,138 @@ TCGが定める[[TPM]]はプログラムの署名を改竄が困難な形で実�
 
 <!-- ------------------------------------------------------------------------ -->
 <section>
-<h2 id="privacy">
+<h2>
+	<span class=j>課題と対処方針</span>
+	<span class=e>Issues and Strategy</span>
+	</h2>
+
+<section>
+<h3> <!-- sec 1 -->
+	<span class=j>マルウェア対策</span>
+	<span class=e>Malware</span>
+	</h3>
+<p class=j>
+(X) CAN-IVI間のフィルタはIVIからCANに異常なシグナルが混入することを防止し、
+CANからIVIに不要な情報を送出しないようにしなくてはならない。
+
+<p class=e>
+(X) A filter between CAN and IVI must prevent abnormal signals from entering into CAN
+and pass minimal necessary information from CAN to IVI.
+
+<p class=j>
+(Y) IVIとInternetに設置するフィルタは、IVIを不正なアクセスから守り、
+Internet上の有害なコンテンツがIVIに持ち込まれることを防止する。
+これには様々なレイヤ・機能のものが考えられ、IVIの一部として実装することがふさわしい物もある。
+
+<p class=e>
+(Y) A filter between IVI and Internet protects IVI from unauthorized accesses and 
+deters malware infection.
+There are several approaches among layers and functions.
+Some of them might be appropriate to be implemented as a part of IVI rather than as an external filter.
+
+<ul class=j>
+	<li> プライベートなアドレスを与えるルーターは外部からのアクセスを困難にする
+	<li> ファイヤーウォールはIVIへのアクセスを必要最小限にする。
+	<li> URLフィルタは、与えられたURLリストへのアクセスを許可または拒否することで危険なサイトの閲覧を防止する。
+	<!--
+	<li> URLフィルタリング：フィッシング、マルウェアのインストールを促す、
+	スパムなどセキュリティ上問題のあるサイトはURLフィルタによりある程度
+	避けることができる。
+	URLのリストは公開されているものが利用可能。
+	-->
+	<li> Web proxy, ウイルスチェッカーを介することで、ダウンロードされるHTML/JS/CSS、その他のコンテンツを網羅的に走査、
+	サニタイズすることができる。
+</ul>
+
+<ul class=e>
+	<li> A network router that provides private IP addresses makes access difficult from outside.
+	<li> A firewall minimizes access to IVI.
+	<li> A URL filter looks for each access in a given URL list so that it prevents downloading malicious contents.
+	<li> Web-proxy/Anti-Virus software sanitizes downloaded HTML/JS/CSS and other data cyclopaedically.
+</ul>
+
+<p class=j>フィルタを通過し、不正なコードが内部に混入した場合に備え、IVIは下記の機能を持つことを検討すべきである。
+
+<p class=e>In a case that a malicious code come into inside of IVI by passing those filters,
+IVI should be considered to have following architecture/functionality.
+
+<ul class=j>
+	<li> セグメンテーション：ランタイムがVehicle APIを実行する場合に、そのリクエストが、
+	アプリケーションのパーミッション、APIの実行時パーミッション、など複数の段階でチェックを受けるように構成する。
+	<li> マルウェア、エクスプロイト検知とアプリケーションの停止： 異常な動作、要求を行うアプリケーションを停止する。
+	ルートを取得された端末は安全とはみなせないため、動作を停止する。
+	<!--
+	<li> メーカーによるアプリ制限*** => access controll
+	<li> ユーザによるアプリ制限 **** => Permission
+	-->
+</ul>
+
+<ul class=e>
+	<li> Segmentation: separates modules and enforces several checks before executing requests from web contents
+	by web-runtime. For instance, installation-time permission check and run-time permission check***.
+	<li> Malware/exploit detection and termination of application: terminates application that behaves suspiciously
+	or that sends abnormal requests. Rootized devices cannot seems to be secured so system should terminate itself.***
+</ul>
+</section>
+
+	
+<section>
+<h3> <!-- sec 2 -->
+	<span class=j>Setメソッド</span>
+	<span class=e>Set method</span>
+	</h3>
+<p class=j>
+Vehicle APIsを含むW3C規格は、双方のモデルに含まれるWebContentとRuntimeの関係を重視し、
+正しいコンテンツがRuntimeの機能を正しく利用できることを要請する。
+IVIの安全性を考える場合は、RuntimeとOSとの関係がより重視される必要がある。
+その際の観点は下記の通りである。
+
+<p class=e>
+W3C specs including the Vehicle APIs attach much value on the relationship between WebContent and runtime in both models
+and require that an authorized content should have access runtime functions.
+While, considering IVI security, the relationship between runtime and operating system should be more taken care.
+Here are points***.
+
+<ul class=j>
+	<li> Vehille APIを経由したリクエストが複数のコンテンツから送らる際、リソースへの競合は適切に処理されるべきである。
+	<li> Vehicle APIの利用パーミッションはWebコンテンツごとに適切に管理されるべきである。
+</ul>
+
+<ul class=e>
+	<li> Even if several contents send request at the same time via Vehicle API,
+	resource race should be appropriately solved.
+	<li> Permission of Vehicle API for each Web Content should be managed independently.
+</ul>
+
+<p class=j>Vehicle Information Access APIが定めるget/set/subscribeのうち、setをサポートする場合、リソース競合の観点から
+慎重な設計が求められる。現在のSpecはデータポイントのロック機構をサポートしないため、
+少なくとも、「setを行うことのできるContentがIVI上でたかだか一つであること」を保証し無くてはならない。
+
+そうでない場合、一つのデータポイントに対し相反する2つの入力が与えられたり、
+2つののデータポイントを同時に操作するべき時に片方しか操作できないといった問題が生じうる。
+
+<p class=e>Vehicle Information Access API defines get/set/subscribe. 
+It requires careful design from the point of the resource race if an implementation supports the set method.
+Current spec doesn't support lock mechanism of data-point.
+Therefor system must ensure that at most only one content exists at the same time which is able to access set-methods.
+
+Otherwise one data-point may receive more than two contradict input.
+Or a content may set only one data-point even when the content need to change more than two data-point all together.
+</section>
+
+<section>
+<h3> <!-- sec 3 -->
+	<span class=j>通信</span>
+	<span class=e>Connection</span>
+	</h3>
+</section>
+
+<!-- ------------------------------------------------------------------------ -->
+<section> <!-- sec 4 --> 
+<h3 id="privacy">
 	<span class=j>プライバシーの保護</span>
 	<span class=e>Privacy Protection</span>
-	</h2>
+	</h3>
 
 <p class=j>
 Vehicle APIsから取得できる情報は、ドラーバーや車の所有者と容易に関連付けることができ、
@@ -799,10 +838,10 @@ DNTが指定されたリクエストに関し、勧告の趣旨に沿った適�
 -->
 
 <section>
-<h3>
+<h4>
 	<span class=j>DNTとその例外</span>
 	<span class=e>DNT and its Exception</span>
-</h3>
+</h4>
 
 <p class=j>
 [[!DNT]]
@@ -850,10 +889,19 @@ API実装者はエンドユーザの意思を反映するため、Access Control
 </section>
 
 <section>
-<h2>
+<h3> <!-- sec 5 -->
+	<span class=j>マルチドライバー</span>
+	<span class=e>Multi driver</span>
+	</h3>
+</section>
+
+
+
+<section>
+<h3> <!-- sec 6 -->
 	<span class=j>アクセスコントロールのベストプラクティス</span>
 	<span class=e>Best Practice on Access control</span>
-	</h2>
+	</h3>
 
 <p class=j>
 WebAPIの利用はオリジン単位で管理され、ユーザの意思に基づき許諾されてきた。
