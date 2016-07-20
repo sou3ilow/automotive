@@ -2,7 +2,7 @@
 <html>
   <head>
   <title>Security and Privacy Consideration on Vehicle APIs</title>
-  <!--<title>Vehicle APIのセキュリティーとプライバシー</title>-->
+  <!--<title>Vehicle APIsのセキュリティーとプライバシー</title>-->
     <meta charset='utf-8'>
     <script src='https://www.w3.org/Tools/respec/respec-w3c-common'
             async class='remove'></script>
@@ -31,7 +31,7 @@
 				  publisher: "***publisher"
 			  },
 
-			  "ISO/IEC15408": {
+			  "ISOIEC15408": {
 				  title: "Common Criteria for Information Technology Security Evaluation",
 				  href: "http://www.commoncriteriaportal.org/cc/",
 				  authors: ["***author"],
@@ -163,6 +163,7 @@ Vehicle Information Service Specification)
 この文書ではVehivle APIを備えたIVI (In-Vehicle Infotainment system)
 を想定して、典型的な構成、参照すべき勧告、プライバシー保護について示し、
 またAPIの利用を特定のコンテンツ提供者に制限するためのベストプラクティスについて述べる。
+<!-- TODO 全体修正後 要改訂 -->
 
 <p class=e>
 This document describes security and privacy consideration for implementing and utilizing
@@ -176,12 +177,12 @@ This document imagines an IVI (In-Vehicle Infotainment system),
 presents typical architectures, recommendation to be referred and privacy protection.
 It also describes best practices of restricting API use for specific developers.
 
-<!--
-	SafetyとSecurityについて記載しておきたい。
--->
+<!-- SafetyとSecurityについて記載しておきたい。 -->
 <p class=j>
-なお、本項は網羅的なリスク評価を行うものではないことに留意する。例えば車とサーバの間の通信が偽装された結果、
-人的被害が生じうる可能性については検討しない。
+なお、本項は網羅的なリスク評価を行うものではないことに留意する。
+例えば車とサーバーの間の通信が偽装される可能性については検討するが、
+それによりどのような被害が生じうるかについては検討しない。
+<!-- TODO 唐突。場所を変えるか追加が必要 -->
 
 <p class=e> ***
 
@@ -205,8 +206,9 @@ Vehicle Access API,
 Vehicle Data Specification,
 Vehilce Information Service Specificationを策定した。
 
-これらのAPIは車に直接アクセスするInterfaceではないが、間接的にセンサデータを取得したり
-制御のリクエストを行う方法を規定している。
+これらのAPIは車に直接アクセスするインターフェースではないが、
+間接的にセンサーデーターを取得したり
+制御のリクエストを行ったりする方法を規定している。
 
 PC向けではないこれらのAPIに特有の課題を調査・検討するためにSecurity &amp; Privacy タスクフォースが
 設置された。
@@ -220,22 +222,24 @@ PC向けではないこれらのAPIに特有の課題を調査・検討するた
 
 そのため、この文書はAPIの実装にかぎらず、IVIの構成自体にも言及することになった。
 
-Section 2ではタスクフォースが収集した、APIのユースケースと懸念点についてのべ、抽出された６つの課題を紹介する。
-Section 3ではIVIの構成や、置かれる環境、Web Runtimeとアプリケーションの関係についてモデルを示す。
-Section 4では標準的に利用されていて、車向けのIVIにも導入すべき基本的なWebのセキュリティ技術について述べる。
-Section 5では最初に抽出した6つの課題について、検討する。
+2節ではタスクフォースが収集したAPIのユースケースと懸念点を列挙し、抽出された課題を紹介する。
+3節ではIVIの構成や、置かれる環境、Web Runtimeとアプリケーションの関係についてモデルを示す。
+4節では標準的に利用されていて、車向けのIVIにも導入すべき基礎的なWebのセキュリティー技術について述べる。
+5節では最初に抽出した課題への対処方針を示す。
+6節には今後さらに検討が必要な項目についてまとめる。
+<p class=e>***
+
 
 <!-- Safety & Security -->
 <p class=j>
-この文章は、セキュリティとプライバシ上の懸念について取り扱い、解決の方向を提示する。
+この文章は、セキュリティーとプライバシー上の懸念について取り扱い、解決の方向を提示する。
 一方でリスクの評価を提供したり、この文書に従うことで問題が解決することを保証したりするものではない。
 詳細なリスクの評価は実装者に委ねられており、不明な場合は安全な側に倒すことを推奨する。
 
 また、IVIのハードウェア要件や、全体の設計を提供することも行わない。
-そういった観点では、以下に示す規格を参照することを進める。
+そういった観点では、以下に示す規格を参照することを勧める。
 
-<p class=e>
-*****
+<p class=e>***
 
 This document is on security and privacy topic around Vehicle APIs. As for other topics, IVI developers
 are encouraged to refer appropriate specifications:
@@ -243,26 +247,28 @@ are encouraged to refer appropriate specifications:
 ****
 
 <ul>
-	<li><span class=j> [[ISO26262]]
+	<li> [[ISO26262]]
+	<span class=j>
    	は自動車の電気・電子に関する機能安全についての国際規格である。
 	IVIは車システムの一部として正常に動作しなくてはならない</span>
-	<span class=e> [[ISO26262]]
+	<span class=e>
 	is an international standard for functional safety of electronic system in automobiles.
 	As a part of an automobile IVI must function well</span>
-	<li> <span class=j> [[ISO/IEC15408]]
-   	は通称CCと呼ばれる、コンピュータ・セキュリティのための国際規格である。
+	<li> [[ISOIEC15408]]
+	<span class=j>
+   	は通称CCと呼ばれる、コンピューター・セキュリティーのための国際規格である。
 	IVIは情報システムとして、不正な利用を排除しなくてはならない。 </span>
-	<li> <span class=e> [[ISO/IEC15408]]
+	<span class=e>
 	known as Common Criteria, is an international standard for computer security.
 	As an information processor IVI must reject illegal access.</span>
-	<ul class=j>
-		<li> 乗用車においてはドライバーを同規格における第一のユーザとみなすべきである。
-		<li> 所有者、同乗者もまたユーザーとみなすことができるが、現時点でVehicle APIはそのような概念をサポートしない。
-	</ul>
-	<ul class=e>
-		<li> Driver of a passenger car would be treated as the primary user of a system in this specification.
-		<li> Although owner and passengers can be considered as users at the same time, 
-		current Vehicle APIs do not support such a concept.
+	<ul>
+	<li> 
+		<span class=j>乗用車においてはドライバーを同規格における第一のユーザーとみなすべきである。</span>
+		<span class=e> Driver of a passenger car would be treated as the primary user of a system in this specification.</span>
+	<li> 
+		<span class=j>所有者、同乗者もまたユーザーとみなすことができるが、現時点でVehicle APIsはそのような概念をサポートしない。</span>
+		<span class=e> Although owner and passengers can be considered as users at the same time, 
+		current Vehicle APIs do not support such a concept.</span>
 	</ul>
 </ul>
 
@@ -277,8 +283,8 @@ Compared to browsers on desktop PCs, particular attention should be given to fol
 
 <ol class=j>
 	<li> ドライバー・同乗者が安全であること。
-	<li> ドライバー・同乗者のプライバシが保護されること。
-	<li> 複数のドライバから利用できること。
+	<li> ドライバー・同乗者のプライバシーが保護されること。
+	<li> 複数のドライバーから利用できること。
 </ol>
 
 <ol class=e>
@@ -290,7 +296,7 @@ Compared to browsers on desktop PCs, particular attention should be given to fol
 <p class=j>
 上記の目的のためには、ランタイムのみならずIVIの周辺環境も注意深く設計される必要がある。
 そのためこの文書ではIVIのアーキテクチャ、IVIとCAN（Car Area Network）との接続のなされ方についても述べ、
-サーバサイドのセキュリティや、緊急時におけるプライバシの取り扱いなどにも触れる。
+サーバサイドのセキュリティーや、緊急時におけるプライバシーの取り扱いなどにも触れる。
 
 <p class=e>
 To satisfy these purposes, web-runtime and as well as its environment should also be designed carefully. 
@@ -355,32 +361,143 @@ explicitly marked as non-normative, examples, and notes. [[!RFC2119]]</p>
 	<span class=e>Use cases of APIs</span></h2>
 
 <p class=j>
-ワーキング・グループではVehicle APIsの策定に際し、将来的な拡張を含めどのようなユースケースが想定され、
-また懸念される事項が何か調査を行った。以下に幾つかの例を挙げる。
+Automotive WGではVehicle APIsの策定に際し、将来的な拡張を含めどのようなユースケースが想定され、
+また懸念される事項が何であるか調査を行った。下記はそのリストである。
 
 <p class=e>
 ***
 
-<ol class=j>
-	<li>（列挙する必要あるのか？）
-	<li>（列挙する必要あるのか？）
-	<li>（列挙する必要あるのか？）
-	<li>（列挙する必要あるのか？）
-</ol>
+<ol>
+	<li>
+		<span class=j>侵入・攻撃への対策</span>
+		<span class=e>Protection agains intrusion and attack</span>
+		
+		<ul>
+		<li class=e><!--1.(48)-->Driver/Owner is alterted that intrusion in the vehicle
+		<li class=e><!--1.(50)-->During the driving, prevent other users from login and controlling the vehicle
+		</ul>
+	</li>
 
-<ol class=e>
-	<li>（列挙する必要あるのか？）
-	<li>（列挙する必要あるのか？）
-	<li>（列挙する必要あるのか？）
-	<li>（列挙する必要あるのか？）
+	<li>
+		<span class=j>通信</span>
+		<span class=e>Communication</span>
+		<ul>
+			<li class=e><!--4.(04)-->As an insurer, I need to be sure that probe data is not tampered.
+			<li class=e><!--4.(07)-->Advanced Driver Assistance System (ADAS) Controller accepts input from authorized onboard sensors
+			<li class=e><!--4.(10)-->Advanced Driver Assistance System (ADAS) Controller accepts input from authorized external source(s)
+			<li class=e><!--4.(12)-->Driver and/or passenger(s) in car want to share journey with virtual passenger(s) that are not in car
+			<li class=e><!--4.(14)-->Vehicle owner/driver/passenger sharing with individual parties commercial or personal
+			<li class=e><!--4.(52)-->Sensors and cameras in the car are included in the set of sensors providing input to customer (and e.g. neighbours) home security alarm. To do this the vehicle and home alarm system will need to mutually authenticate so that home alarm trusts inputs and customer's vehicle only provides input to alarm system(s) selected by the customer. Normally just their own system, but e.g. in future, a neighbourhood watch group could agree to share external sensor / camera data
+			<li class=e><!--4.(53)-->Media (including photos, videos, music (subject to DRM licencing)) is seamlessly shared between all of the user's devices including their car and with offline cloud storage e.g User's Dropbox, OneDrive etc account. User can seamlessly view and play their content on any device including their car. Requires that each device or service that the user has content stored on can securely share the user's content. To do this, either the device or the identity of the user logged in on the device or service will need to be verified before content can safely and securely be shared between devices. If content is to be seamlessly downloaded from cloud storage, may need to obtain and use security token (e.g. OAUTH2) to access user's content.
+			<li class=e><!--4.(54)-->Vehicle needs to trust that the input comes from the fridge in the customer's home and needs to establish identity of customer's fridge in order to trust input. Fridge should only communicate with customer's vehicle (and any other parties authorised by the customer) in part to protect customer's privacy.
+			<li class=e><!--4.(55)-->Vehicle suspension sensors, front facing cameras etc can detect damage to road surface (potholes, broken manholes, broken drain covers etc) and communicate location and details of damage to other vehicles and to the local authority responsible for repairing roads. Vehicle needs to prove its identity to other vehicles and to local authority service so that input can be trusted.
+		</ul>
+	</li>
+
+	<li> 
+		<span class=j>Setメソッド</span>
+		<span class=e>Set method</span>
+		<ul>
+
+		<li class=e><!--2.(02)-->As a driver, I don't want any remote person to control my car (eg. speed, door lock etc.)
+		<li class=e><!--2.(11)-->Advanced Driver Assistance System (ADAS) Controller sets safety critical controls when driving vehicle
+		<li class=e><!--2.(16)-->IVI system shows the status of various climate control equipments as GUI and lets a user control it via touch screen.(Even set API is not recommended)
+		<li class=e><!--2.(17)-->A user uses his smart devices to remotely check whether side windows of his parked car are closed or not, and to send a request to the car for closing it if opened.
+		<li class=e><!--2.(18)-->A user uses his smart devices to start his car remotely, and turns heaters on to warm up the car inside before getting in the car.
+		<li class=e><!--2.(25)-->Driver would like to remotely lock/unlock vehicle.
+		<li class=e><!--2.(26)-->Driver would like to remotely start vehicle and turn on/set heat or air conditioner
+		<li class=e><!--2.(28)-->Driver would like to configure seat settings remotely.
+		<li class=e><!--2.(31)-->Automaker would only like to allow API to access data from their remote servers not directly from car.
+		<li class=e><!--2.(32)-->Automaker only wants to allow remote settings via cloud not by direct connection.
+		<li class=e><!--2.(34)-->Ted a tall driver of the family car approaches the car and the seat adjusts to his settings
+		<li class=e><!--2.(42)-->Customer has the ability to set HVAC controls.
+		<li class=e><!--2.(43)-->Airbag has deployed the event is captured.
+		<li class=e><!--2.(49)-->One "Set" API is only allowed to accept input from one source at one moment
+		</ul>
+	</li>
+
+	<li>
+		<span class=j>APIのアクセスコントロール</span>
+		<span class=e>API access control</span>
+		<ul>
+		
+		<li class=e><!--3.(03)-->As an OEM, I don't permit any application to use Vehicle APIs without my check.
+		<li class=e><!--3.(09)-->Ability to query registry of trusted 3rd parties, retrieve identification mechanisms
+		<li class=e><!--3.(17)-->A user uses his smart devices to remotely check whether side windows of his parked car are closed or not, and to send a request to the car for closing it if opened.
+		<li class=e><!--3.(18)-->A user uses his smart devices to start his car remotely, and turns heaters on to warm up the car inside before getting in the car.
+		<li class=e><!--3.(24)-->3rd party would like to see log of driving events
+		<li class=e><!--3.(25)-->Driver would like to remotely lock/unlock vehicle.
+		<li class=e><!--3.(26)-->Driver would like to remotely start vehicle and turn on/set heat or air conditioner
+		<li class=e><!--3.(27)-->Vehicle owner subscribes to 3rd party monitoring of vehicle data and trouble codes to ensure vehicle is running in good health
+		<li class=e><!--3.(28)-->Driver would like to configure seat settings remotely.
+		<li class=e><!--3.(29)-->Automaker has access to all data elements including elements such as those relating to vehicle quality or operating data whereas application developer only has access to subset.
+		<li class=e><!--3.(31)-->Automaker would only like to allow API to access data from their remote servers not directly from car.
+		<li class=e><!--3.(34)-->Ted a tall driver of the family car approaches the car and the seat adjusts to his settings
+		<li class=e><!--3.(44)-->Diagnostics application is monitoring battery voltage for the event where it drops below a specific voltage.  Event monitoring.
+		<li class=e><!--3.(45)-->Service monitors weather and checks if windows are open, they are closed.
+		<li class=e><!--3.(46)-->Remotely close windows, sunroof, etc...
+		<li class=e><!--3.(47)-->Driver/Owner is alterted that parking brake is not set
+		<li class=e><!--3.(51)-->An application can only access the log created by itself
+		</ul>
+	</li>
+
+	<li> 
+		<span class=j>複数のドライバーと利用者</span>
+		<span class=e>Multi drivers/users</span>
+		<ul>
+		<li class=e><!--6.(34)-->Ted a tall driver of the family car approaches the car and the seat adjusts to his settings
+		<li class=e><!--6.(35)-->Current driver is identified.
+		<li class=e><!--6.(36)-->Family is travelling in vehicle and all passengers are identified.
+		<li class=e><!--6.(38)-->Driving across toll bridge the responsible party is identified and payment from their account is made.  Could apply to any 3rd party vendor.
+		<li class=e><!--6.(50)-->During the driving, prevent other users from login and controlling the vehicle
+		<li class=e><!--6.(56)-->IVI apps such as recommendation, reservation, shopping, pay-per-use  service, etc.,  should operate in a personal basis, which means that apps and its API have to be changed by driver/user.
+		<li class=e><!--6.(48)-->Driver/Owner is alterted that  that intrusion in the vehicle
+		<li class=e><!--6.(50)-->During the driving, prevent other users from login and controlling the vehicle
+		<li class=e><!--6.(56)-->IVI apps such as recommendation, reservation, shopping, pay-per-use  service, etc.,  should operate in a personal basis, which means that apps and its API have to be changed by driver/user.
+		<li class=e><!--6.(60)--> E-commerce from the dashboard for drivers’ purchases of fast food, gas,etc.has been available. Cars become hackers' and rogue mechanics’ target for identity theft (credit card numbers, home address, e-mail information and all the other personal details).
+		</ul>
+	</li>
+
+	<li>
+		<span class=j>データ所有者の権利</span>
+		<span class=e>User's right for their data</span>
+		<ul>
+		<li class=e><!--5.(01)-->As a user, I'd like to remove any private data from the car when I leave.
+		<li class=e><!--5.(05)-->I usually set "Do Not Track", but help me immediately after the accident.
+		<li class=e><!--5.(06)-->I am willing to provide vehicle data for traffic monitoring, but does not want a police officer to know my destination and the exact speed of my car.
+		<li class=e><!--5.(08)-->As a user, I'd like to apply different data granularity depending on whom to send the data.
+		<li class=e><!--5.(15)-->When I turn DO-NO-TRACK on, I expect any of my activities are not monitored nor recorded.
+		<li class=e><!--5.(19)-->If users agree to provide vehicle information to the weather station, many cars can be used to get weather information such as amounts of rain and ambient temperatures.
+		<li class=e><!--5.(21)-->IVI records the scene before and after an accident (for insurance or testimony)
+		<li class=e><!--5.(23)-->Driver would like to see log of ADAS/driving events
+		<li class=e><!--5.(27)-->Vehicle owner subscribes to 3rd party monitoring of vehicle data and trouble codes to ensure vehicle is running in good health
+		<li class=e><!--5.(39)-->Customer is alerted to low tire pressure, repair locations are recommended.
+		<li class=e><!--5.(40)-->Emergency responder is called to accident, vehicle reports who is in the car and can report if there are existing medical conditions
+		<li class=e><!--5.(41)-->Emergency responder is called to accident, vehicle reports where airbags are in car.
+		<li class=e><!--5.(43)-->Airbag has deployed the event is captured.
+		<li class=e><!--5.(44)-->Diagnostics application is monitoring battery voltage for the event where it drops below a specific voltage.  Event monitoring.
+		<li class=e><!--5.(55)-->Vehicle suspension sensors, front facing cameras etc can detect damage to road surface (potholes, broken manholes, broken drain covers etc) and communicate location and details of damage to other vehicles and to the local authority responsible for repairing roads. Vehicle needs to prove its identity to other vehicles and to local authority service so that input can be trusted.
+		<li class=e><!--5.(57)-->"Consumer has some locations he/she does not want other people to know.  (Home, religious site, specialized hospital, secret 3rd place, etc.)"
+		<li class=e><!--5.(58)-->Consumer has less right of choice for data elements, rectification and erasure of data.
+		<ul>
+	</li>
 </ol>
 
 <p class=j>
-これらを整理した結果、5つの課題が抽出され、その解決方法はUser Agentだけではなく
-IVI全体として解決してゆく必要が有ることがはっきりした。
-詳細は、後ろの章に譲るが、それぞれの課題についての基本的な方向性について述べておく。
+以上の様にVehicle APIsへの期待はIVIへの期待であり、
+寄せられた懸念に対してはユーザーエージェントのみならず、
+IVIのシステム全体として対策を検討する必要があることがわかった。
 
+以下ではまず、議論の前提として想定するモデルアーキテクチャを定め、
+セキュアなWebサービスを構成するために標準的に利用されている他のW3C勧告について概観する。
+
+その上で、ユースケースを整理して得られた課題について対処方針を検討する。
 <p class=e> ***
+
+<!--
+これらを整理した結果、下記の課題が抽出され、その解決方法はユーザーエージェントだけではなく
+IVI全体として解決してゆく必要があることがはっきりした。
+詳細は、後ろの章に譲るが、それぞれの課題についての基本的な方向性について述べておく。
 
 <ol>
 	<li>
@@ -389,10 +506,19 @@ IVI全体として解決してゆく必要が有ることがはっきりした�
 	</li>
 	<p class=j>
 	マルウェアの侵入検知について、APIレベルでは同一生成元ポリシーに則った処置を行う。
-	ネイティブアプリについてはプラットフォームでの対応が必要であり、特にアップデートが重要である。
+	ネイティブアプリについてはプラットフォームでの対応が必要であり、特にシステムのアップデートが重要である。
 
 	<li>
-	<span class=j>値を設定するメソッドへの対応</span>
+	<span class=j>通信問題</span>
+	<span class=e>****</span>
+	</li>
+	<p class=j>
+	プラットフォームからもたらされたデータが偽装されている可能性について、Vehicle APIsは特に対策を
+	提供していない。将来的に署名やメッセージ認証コードが付与されたデータが扱われる可能性については
+	次のバージョン以降での議論となる。
+
+	<li>
+	<span class=j>Set method</span>
 	<span class=e>********</span>
 	</li>
 	<p class=j>
@@ -400,13 +526,11 @@ IVI全体として解決してゆく必要が有ることがはっきりした�
 	APIはインターフェースを規定しつつ、サービスを提供しない方法を定めており、これを利用すべきである。
 
 	<li>
-	<span class=j>通信問題</span>
+	<span class=j>アクセスコントロール</span>
 	<span class=e>****</span>
 	</li>
 	<p class=j>
-	プラットフォームからもたらされたデータが偽装されている可能性について、Vehicle APIは特に対策を
-	提供していない。将来的に署名やメッセージ認証コードが付与されたデータが扱われる可能性については
-	次のバージョン以降での議論となる。
+	APIの利用許諾はユーザーによるものと、ベンダーによるものがあり、特に後者をサポートしなくてはならない。
 
 	<li>
 	<span class=j>ユーザーの権利</span>
@@ -424,56 +548,127 @@ IVI全体として解決してゆく必要が有ることがはっきりした�
 	車には所有者と複数の利用者がおり、それぞれに合わせたプリファレンスを適用する必要がある。
 	(具体的に？)
 	
-	<li>
-	<span class=j>アクセスコントロール</span>
-	<span class=e>****</span>
-	</li>
-	<p class=j>
-	APIの利用許諾はユーザによるものと、ベンダーによるものがあり、特に後者をサポートしなくてはならない。
 </ol>
-
+-->
 
 </section>
 
-
 <!-- ------------------------------------------------------------------------ -->
-<section>
+<section><!-- modelarchitecture -->
+
 <h2>
-	<span class=j>アーキテクチャ</span>
-	<span class=e>Architecture</span>
+	<span class=j>モデルアーキテクチャ</span>
+	<span class=e>Model Architecture</span>
 </h2>
 
+<!-- 理由とGENEVI -->
 <p class=j>
-Vehicle APIが想定するIVIは図のように、インターネットとCAN(Car Area Network）の双方にアクセス
-可能である。
-
-ほかのAPI同様、アプリケーションはインターネットから得られ、IVI上で実行される。
-アプリケーションはVehicle APIを通して車両の情報を取得する。
-アプリケーションはこれ以外の方法で車両にアクセスすることはできない。
-
+この節ではAPIが想定する抽象的なアーキテクチャを示す。より詳細なモデルは例えば[[GENEVI]]が提供している。
 <p class=e>***
 
-
-
+<!-- 環境とアプリケーションの制限 -->
 <p class=j>
-IVIはベースとなるPlatform OSとその上でWebアプリを動作させるWebRutime(User agent)からなる。
-Vehicel Access APIはRuntimeとApp間のインターフェースを定めているが、
-プラットフォーム固有のフォーマットを持つアプリ（ネイティブアプリ）にも同様のデータを提供したい
-という期待からVehicle Signal APIの規定が進められている。
+まず、IVIは図1のように、
+インターネットとCAN(Car Area Network）の双方にアクセス可能な環境に置かれる。
 
+ほかのDOM API同様、アプリケーションはインターネットから得られ、IVI上で実行される。
+アプリケーションはVehicle APIsを通して車両の情報を取得する。
+アプリケーションはこれ以外の方法で車両の情報にアクセスすることはできない。
 <p class=e>***
 
-<center>
+<figure>
 <img 
 	src="./can-ivi-internet.png" 
 	width=50%	
 	alt="CAN - (X) - IVI - (Y)- Internet"></img>
+	<figcaption>
+	<span class=j> IVIの置かれる環境 </span>
+	<span class=e> Environment around IVI </span>
+   	</figcaption>
 <br>
-</center>
+</figure>
 
+<!-- IVIとWebランタイム-->
+<p class=j>
+IVIは、ベースとなるOSとその上でWebアプリケーションを動作させるWeb Runtimeからなる。
+(Service specの実装では更にローカルサーバーが置かれる。)
+
+この文書ではhtml/js/cssの記述にもとづいてUIを提供し、プラットフォームに
+リクエストを送るモジュールをWeb Runtimeと呼ぶ。
+<!--
+TODO よそで定義されていないか
+
+- https://developer.mozilla.org/ja/Apps/FAQs/About_apps#How_can_my_app_detect_that_it_is_in_the_Web_runtime.3F
+	- アプリケーションのバックエンドとして定義されている
+- https://www.w3.org/TR/runtime/
+	- 勧告としては終了している。
+
+-->
+
+<!-- 
+Web RuntimeとWebアプリの関係は2つが想定される。
+また、IVI上ではWeb Runtimeを利用せずに、直接ベースプラットフォームにリクエストを送るアプリ
+も考えられる。
+-->
+アプリケーションには図2のような幾つかの形態が考えられる。
+<dl>
+	<dt>Normal content</dt>
+	<dd>インターネット上のコンテンツがダウンロードされ、ブラウザ上で実行される形式。
+	<dt>Webview based</dt> <!-- TODO Web Runtime? -->
+	<dd>コンテンツがWebviewを利用する形で予めアプリケーションと一体となって配布される形式。
+	<dt>Native App</dt>
+	<dd>OSがサポートするネイティブのアプリとして提供される形式。
+</dl>
+
+<!-- Service Specについて触れるのは藪蛇か。 -->
+<p class=j>
+Vehicle APIsは車の情報を提供する２つのインターフェースを提供する。
+DOM APIであるVehilce Access Interface***は
+Normal contentとWebview base形式のアプリケーションに車両情報へのアクセスを提供する。
+
+Webviewベースのアプリケーションは、
+APIを利用するコードが予めデータとして一つのパッケージに収められている点に特色がある。
+Webviewベースの場合、マーケット（アプリケーション配布のシステム）での審査などを活用し、
+APIの悪意ある利用をある程度防ぐことができる。
+<p class=e>***
 
 <p class=j>
+実装者がWebRuntimeだけでなく、プラットフォームそのものも開発する場合、
+ネイティブアプリケーションにも同様の車両情報を提供したいと考えるかもしれない。
+その場合はVehicle Service Specを実装することが望ましい。
+この
+<p class=e>***
 
+<!-- 下記の記述はかぶってるので整理が必要
+
+プラットフォーム固有のフォーマットを持つアプリ（ネイティブアプリ）にも同様のデータを提供したい
+という期待からVehicle Signal APIの規定が進められている。
+<p class=e>***
+
+
+<p class=j>IVIはこれまで個々のプラットフォーム上で開発されてきており、
+Vehicle APIsを取り込んだIVIはスマートフォンに見られるように、
+ネイティブアプリとWebアプリをサポートすると考えられ、
+Webアプリにもブラウザで動作するものと、Runtimeを内包した形態のものが考えられる。
+
+<p class=e>
+IVI has been developed on many platforms so far. As seen in smartphone world, 
+IVI with Vehicle APIs will support both native application and Web Application.
+There are two type of web application; one is working on a browser and another contains
+web-runtime inside of the app.
+-->
+
+<figure>
+<img
+	src="./app-format.png"
+	width=50%	
+	alt"normal content, webview based, Native app"></img>
+	<br>
+	<figcaption>
+	<span class=j> アプリケーションの形式 </span>
+	<span class=e> Three application types </span>
+   	</figcaption>
+</figure>
 
 <!--
 <p class=j>
@@ -485,54 +680,31 @@ We suppose that IVI is located where it can have access to Internet and CAN.
 Both CAN/IVI and IVI/Internet are appropriately separated
 and there should be certain filters at each intermediate.
 -->
-
-
-
-<p class=j>IVIはこれまで個々のプラットフォーム上で開発されてきており、
-Vehicle APIを取り込んだIVIはスマートフォンに見られるように、
-ネイティブアプリとWebアプリをサポートすると考えられ、
-Webアプリにもブラウザで動作するものと、Runtimeを内包した形態のものが考えられる。
-
-<p class=e>
-IVI has been developed on many platforms so far. As seen in smartphone world, 
-IVI with Vehicle API will support both native application and Web Application.
-There are two type of web application; one is working on a browser and another contains
-web-runtime inside of the app.
-
-<center>
-<img
-	src="./app-format.png"
-	width=50%	
-	alt"normal content, webview based, Native app"></img>
-<br>
-</center>
-
-
-
-</section>
+</section><!-- modelarchitecture -->
 
 <!-- ------------------------------------------------------------------------ -->
-<section>
+<section><!--  basicwebsecuritytechiniques -->
 <h2>
-	<span class=j>標準的なWeb Security技術の利用</span>
+	<span class=j>標準的なWebセキュリティー技術の利用</span>
 	<span class=e>Basic Web Security Techniques</span>
-	</h2>
+</h2>
 
-<p class=j>以下に挙げるSecurty関連勧告は開発者がセキュリティを検討する上で、
-核となる技術であり、Vehicle APIsを実装するUser-Agentはこれらも実装を必須とすべきである。
+<p class=j>
+以下に挙げるセキュリティー関連勧告は開発者がセキュリティーを検討する上で核となる技術であり、
+Vehicle APIsを実装するユーザーエージェントはこれらも必ず実装をしなくてはならない。
 
 <p class=e>
 Followings are fundamental recommendation for considering web security, 
 User-Agent which implements Vehicle APIs must implement them as well.
 
 <ul>
-	<li class=j> [[!HTTPS]] は接続先が詐称されることを防ぎ通信を暗号化する、WebSecurityの基本となる勧告である
+	<li class=j> [[!HTTPS]] は接続先が詐称されることを防ぎ通信を暗号化する、Webセキュリティーの基本となる勧告である
 	<li class=e> [[!HTTPS]] is an essential recommendation for web security.  It prevents spoofing of destination and encrypts a communication channel.
 	<li class=j> [[!CSP]] は開発者が意図しないリソースの利用を防ぐことでXSSなどの攻撃を効果的に防ぐ勧告である。
 	<li class=e> [[!CSP]] protects service from attacks such as XSS by prohibiting unintentional access to resources.
 	<li class=j> [[!CORS]] はクロスオリジンアクセスを特定のサーバにのみ許諾することで、不特定多数からの攻撃を避けるための勧告である。
 	<li class=e> [[!CORS]] avoids illegal access by allowing cross origin access only by contents from specified servers.
-	<li class=j> [[!DNT]] はユーザが個人の追跡を拒否することを表明するための勧告である。
+	<li class=j> [[!DNT]] はユーザーが個人の追跡を拒否することを表明するための勧告である。
 	<li class=e> [[!DNT]] is a recommendation to assert that an end-user do not wish to be tracked.
 	<!--
 	<a href="#biblio-mixed">[MIX]</a>
@@ -541,7 +713,7 @@ User-Agent which implements Vehicle APIs must implement them as well.
 </ul>
 
 <p class=j>
-開発者は上記を有効に利用するとともに、一般的なWebセキュリティ技術も取り入れることで、
+開発者は上記を有効に利用するとともに、一般的なサーバーサイドのセキュリティー技術も取り入れることで、
 悪意のあるコードがIVIにもたらされないよう留意する。
 そのような技術には下記のものがある。
 
@@ -553,15 +725,65 @@ Following techniques are such examples.
 <ul class=j>
 	<li>パスワード等による認証
 	<li>適切な有効期間を設定したトークンの利用
-	<li>サーバに対する異常なアクセスの検知(SIEM)
+	<li>サーバに対する異常なアクセスの検知(SIEM, Security information and event mangaing)
+	<li>ユーザーの入力値や外部から取得したデータのサニタイズ
+	<li>CORS関連ヘッダの付与
 </ul>
 <ul class=e>
 	<li>User authentication by password/biometrics. <!-- FIDO -->
 	<li>Access token with appropriate time period.
 	<li>Detection of abnormal access to the server (SIEM, Security information and event managing)
+	<li>***
+	<li>***
 </ul>
 
-<p class=j>WebのSecuiryを有効に保つには、セキュリティホールが見つかった際に速やかなアップデートを行うことが必要である。
+</section><!-- basicwebsecuritytechiniques -->
+
+
+<!-- ------------------------------------------------------------------------ -->
+<section><!-- issuesandstrategy -->
+<h2>
+	<span class=j>課題と対処方針</span>
+	<span class=e>Issues and Strategy</span>
+</h2>
+
+<section><!-- systemanddatahelth -->
+<h3>
+	<span class=j>システムとデータの健全性確保</span>
+	<span class=e>System and Data helth</span>
+</h3>
+
+<!-- トラストチェーン -->
+<p class=j>
+前の章で標準的なWebのセキュリティー技術を概観したが、その正しさはベースとなるプラットフォームに依存する。
+この章ではWeb Runtimeの周辺に目を向け、必要なセキュリティー対策について検討する。
+<!-- TODO: 不十分 -->
+<p class=e>***
+
+<!-- 脅威の外観とアップデート -->
+<p class=j>
+外部のネットワークに接続するIVIには外部からの不正アクセスや、意図しないマルウェアの混入など、
+PCと同等の脅威が存在する。
+これらの脅威に対しては事前の対策がまず必要であり、
+次に、脆弱性が判明した場合に速やかなアップデートを行うことが必要である。
+<p class=e>***
+
+<p class=j>事前の対策としては物理的・論理的にアクセス経路を遮断する設計を第一に検討すべきである。
+Vehilcle Information Service Specのように、リクエストを処理するステップを複数に階層分けすることも
+攻撃を困難にする。
+<!-- TODO: 不十分 -->
+
+<p class=e>****
+
+<!-- セキュアなアップデート -->
+<p class=j>
+ファームウェア・ソフトウェアのアップデートはシステムの健全性を維持する上で不可欠であるが、
+アップデート機構そのものが脆弱性となるケースもしばしば見られる。
+[[ISO x.itsec-1]]は特に車載ソフトウェアのアップデートに関してプロトコルを規定しており、
+これを参照して定期的なアップデートを行うべきである。
+<!-- TODO: つかえるのか -->
+
+<p class=j>セキュリティーレベルを保つには、<!-- TODO 用語 -->セキュリティーホールが見つかった際に速やかなアップデートを行うことが必要である。
 [[CVE]]
 は幅広くWebRuntimeあるいはOSに脆弱性を報告している。
 IVIの開発者はそれらの情報をもとに、 OSを含めたアップデート方法を予め検討しておくべきである。
@@ -578,40 +800,103 @@ In several layer such as web-runtime, libraries or OS, IVI should be designed to
 [[CVSS]]
 could be a help to quantify vulnerability impact.
 
-<!-- update -->
+<!-- アップデート -->
+<!-- TODO ここで扱うのが適切か？ -->
 <p class=j>
-ソフトウェアのアップデートはそれ自体がセキュリティ・ホールとなりやすい。
+ソフトウェアのアップデートはそれ自体がセキュリティー・ホールとなりやすい。
 [[!ISO SG17]]では車両向けにソフトウェア・アップデートの方法が検討されてきており、
 この成果を取り入れることを検討すべきである。
 
 <p class=e>
 ****
 
-<!-- hardware -->
+<!-- ハードウェア -->
+<!-- TODO ここで扱うのが適切か？ -->
 <p class=j>
-ハードウェアによるセキュリティ向上も利用できる。
+ハードウェアによるセキュリティー向上も利用できる。
 TCGが定める[[TPM]]はプログラムの署名を改竄が困難な形で実現するもので、
 システムの健全性をチェックするために利用することができる。
 
 <p class=e>
 ****
 
+<section> <!-- protectionagainstintrusionandattack -->
+<h4> 
+	<span class=j>不正侵入への対策</span>
+	<span class=e>Protection against intrusion and attack</span>
+</h4>
 
-</section>
-
-<!-- ------------------------------------------------------------------------ -->
-<section>
-<h2>
-	<span class=j>課題と対処方針</span>
-	<span class=e>Issues and Strategy</span>
-	</h2>
-
-<section>
-<h3> <!-- sec 1 -->
-	<span class=j>マルウェア対策</span>
-	<span class=e>Malware</span>
-	</h3>
+<!-- 不正な侵入の例 -->
 <p class=j>
+Webアプリケーションは、ローカルのファイルにアクセス出来ないなど、ネイティブアプリケーションに
+比べて強い制限を受けており、システムへの攻撃が比較的困難である。
+一方でWeb runtime自体が大きく複雑なため、API実装やプラグイン・モジュールにメモリ破壊などの問題が
+しばしばあり、それらの脆弱性をついたウイルス感染などがあった。<!-- TODO 本当か -->
+
+<!-- 信頼のおけるアプリケーション配布もと -->
+<p class=j>
+問題のあるアプリケーションを取得しないようにするためには
+アプリの入手元を信頼の置けるサイトに限定することが考えられれる。
+例えば[[!Safe Browsing]]はブラックリスト方式で
+マルウェアを配布したり、フィッシング目的のサイトのURLへアクセスを試みると警告を出す。
+<p class=e> *****
+
+<!-- ローカルProxy -->
+<p class=j>
+URLをフィルタするだけでなく、問題のあるコードを除去することも必要であれば、
+ローカルにProxyサーバを置いてサニタイズ処理を行わせることもできる。
+Proxyサーバを利用することのメリットはWeb Runtimeには変更を加える必要がない点である。
+
+<p class=e> *****
+
+<!-- 直接的な不正アクセス -->
+<p class=j>
+車に対しては直接的な不正アクセスの事例も幾つか報告されている。
+これらの事例では車に備え付けの無線LANアクセスポイントへの不正ログイン、
+偽装された基地局への誘導、
+クラウドサーバーへの不正なログインなどが行われており、
+独立したシステムとしてセキュリティーを検討する必要がある。 <!-- TODO 何を言っているのか -->
+<p class=e>***
+
+<!-- 不正アクセスへの対処 -->
+<p class=j>
+不正アクセスに対する防衛策としては不必要にサービスを開示しないことが基本である。
+例えばVehicle Service Information SpecificationはWebサーバとして振る舞うが、
+IVIの外からのアクセスを想定しないのであれば、受け付けるリクエストをIVI内部からのものに
+限定すべきである。
+<p class=e> ***
+
+<p class=j>
+Vehicle Service Information Specification の場合は、Webサーバに適用されるセキュリティー対策を
+利用すべきである。アクセストークンの利用などがその一例であり、詳細は同Specのセキュリティー Consideration
+を参照のこと。
+
+<p class=j>
+フィルタを通過し、不正なコードが内部に混入した場合に備え、IVIは下記の機能を持つことを検討すべきである。
+
+<p class=e>In a case that a malicious code come into inside of IVI by passing those filters,
+IVI should be considered to have following architecture/functionality.
+
+<ul class=j>
+	<li> セグメンテーション：ランタイムがVehicle APIsを実行する場合に、そのリクエストが、
+	アプリケーションのパーミッション、APIの実行時パーミッション、など複数の段階でチェックを受けるように構成する。
+	<li> マルウェア、エクスプロイト検知とアプリケーションの停止： 異常な動作、要求を行うアプリケーションを停止する。
+	ルートを取得された端末は安全とはみなせないため、動作を停止する。
+	<!-- TODO ルートは別の場所が良いか。説明も不足 -->
+</ul>
+
+<ul class=e>
+	<li> Segmentation: separates modules and enforces several checks before executing requests from web contents
+	by web-runtime. For instance, installation-time permission check and run-time permission check***.
+	<li> Malware/exploit detection and termination of application: terminates application that behaves suspiciously
+	or that sends abnormal requests. Rootized devices cannot seems to be secured so system should terminate itself.***
+</ul>
+
+
+
+<!--
+<p class=e>
+
 (X) CAN-IVI間のフィルタはIVIからCANに異常なシグナルが混入することを防止し、
 CANからIVIに不要な情報を送出しないようにしなくてはならない。
 
@@ -634,15 +919,15 @@ Some of them might be appropriate to be implemented as a part of IVI rather than
 	<li> プライベートなアドレスを与えるルーターは外部からのアクセスを困難にする
 	<li> ファイヤーウォールはIVIへのアクセスを必要最小限にする。
 	<li> URLフィルタは、与えられたURLリストへのアクセスを許可または拒否することで危険なサイトの閲覧を防止する。
-	<!--
+
 	<li> URLフィルタリング：フィッシング、マルウェアのインストールを促す、
-	スパムなどセキュリティ上問題のあるサイトはURLフィルタによりある程度
+	スパムなどセキュリティー上問題のあるサイトはURLフィルタによりある程度
 	避けることができる。
 	URLのリストは公開されているものが利用可能。
-	-->
 	<li> Web proxy, ウイルスチェッカーを介することで、ダウンロードされるHTML/JS/CSS、その他のコンテンツを網羅的に走査、
 	サニタイズすることができる。
 </ul>
+
 
 <ul class=e>
 	<li> A network router that provides private IP addresses makes access difficult from outside.
@@ -657,14 +942,12 @@ Some of them might be appropriate to be implemented as a part of IVI rather than
 IVI should be considered to have following architecture/functionality.
 
 <ul class=j>
-	<li> セグメンテーション：ランタイムがVehicle APIを実行する場合に、そのリクエストが、
+	<li> セグメンテーション：ランタイムがVehicle APIsを実行する場合に、そのリクエストが、
 	アプリケーションのパーミッション、APIの実行時パーミッション、など複数の段階でチェックを受けるように構成する。
 	<li> マルウェア、エクスプロイト検知とアプリケーションの停止： 異常な動作、要求を行うアプリケーションを停止する。
 	ルートを取得された端末は安全とはみなせないため、動作を停止する。
-	<!--
 	<li> メーカーによるアプリ制限*** => access controll
-	<li> ユーザによるアプリ制限 **** => Permission
-	-->
+	<li> ユーザーによるアプリ制限 **** => Permission
 </ul>
 
 <ul class=e>
@@ -673,14 +956,150 @@ IVI should be considered to have following architecture/functionality.
 	<li> Malware/exploit detection and termination of application: terminates application that behaves suspiciously
 	or that sends abnormal requests. Rootized devices cannot seems to be secured so system should terminate itself.***
 </ul>
+	-->
+</section> <!-- protectionagainstintrusionandattack -->
+
+<!-- ----------------------------------------------------------------------- -->
+<section> <!-- secConnection -->
+<h4>
+	<span class=j>データの正真性</span>
+	<span class=e>Data integrity</span>
+</h4>
+
+<p class=j>
+車から得られる情報は、例えば保険の参考にするなど金銭的<!-- TODO 表現どうか-->な価値を生む可能性がある。
+そのようなケースでは悪意を持ったコードが外部から混入しなくとも、
+ユーザーがデータがデータを偽装しようとするインセンティブが働く。
+<p class=e>***
+
+<p class=j>
+あるいは、車から得られる情報が道路の混雑状況などの公共目的に利用されるようになった場合、
+いたずら目的のデータがアップロードされる可能性もある。
+<p class=e>***
+
+<p class=j>
+こういった偽装行為を行うためにはIVIに自由にアクセスできる必要がある。
+<!-- 本当に必要条件？ -->
+スマートフォンの例を参考にすれば、そのような行為を完全に防ぐことは困難であるといえる。
+Vehilce APIsはプラットフォームが提供するデータが偽装されるケースに対し現在のところ、解決策を持っていない。
+このような課題は他のWeb規格との整合性を保ちつつ、今後検討されることが望まれる。
+<p class=e>***
+
+<p class=j>
+アプリケーション・サービスの提供者はこのような状況を考慮したうえで、取得したデータの取り扱いを
+検討しなくてはならない。
+<p class=e>***
+
+</section> <!-- endof secConnection -->
 </section>
 
-	
-<section>
-<h3> <!-- sec 2 -->
-	<span class=j>Setメソッド</span>
+<!-- ----------------------------------------------------------------------- -->
+<section> <!-- accesscontroll -->
+<h3>
+	<span class=j>アクセスコントロール</span>
+	<span class=e>Acceess control</span>
+</h3>
+
+<!-- 章の説明 -->
+<p class=j>
+この章ではAPI提供側の視点に立って、APIの利用をコントロールする手段を検討する
+<p class=e>***
+
+<!-- 伝統的なアクセスコントロール -->
+<p class=j>
+通常DOM APIは実装者が開示したものを、開発者が使用する形式が標準的である。
+デスクトップ向けのブラウザでは現在時刻やマウスポインタの位置の情報取得、
+ページのスクロールなどを開発者は自由に利用できる。
+この様な無制限のAPI利用は利用者に不便をもたらしたり、プライバシー上の懸念があったりすることなどを理由に
+GPS情報の取得など一部のAPIはユーザーのパーミッションを設けられている。
+<p class=e> ***
+
+<!-- 不正とみなせるアクセス -->
+<p class=j>この他、近年のブラウザでは頻発するポップアップ表示などが検知された際に、
+ユーザーに表示を停止するか否か問い合わせることがある。
+頻度の高いAPIリクエストには悪意がある場合とプログラム上のバグの両方の可能性があるが、
+いずれにせよこれらを検知してユーザーに確認するか、自動的に停止することが望ましい。
+<p class=e> ***
+
+<!-- 限界 -->
+<p>全ての判断をユーザーに任せる方式には限界もある。例えばVehicle APIsは100を超えるデータポイントを定義するが、
+その一つ一つについて利用可否を判断するのはユーザービリティを損なうおそれがある。
+また、APIを提供する視点からも、予期しない利用を避けるため
+適当な制限を起きたいという要請がある。
+<p class=e> ***
+<!-- TODO だから？ちょっとうまくかけてない。 -->
+
+
+<!-- ----------------------------------------------------------------------- -->
+<section> <!-- setmethod -->
+<h3>
+	<span class=j>Set メソッド</span>
 	<span class=e>Set method</span>
-	</h3>
+</h3>
+
+<!-- set/get/subscribeの紹介 -->
+<p class=j>
+Vehicle Data Specificationは多数のデータポイントを定義し、
+Vehicle Information Access API各データポイントに対し値を変更するset, 現在値を取得するget,
+及び値を継続的に取得するsubscribeメソッドを定義している。
+<p class=e>***
+
+<figure>
+<!-- <img
+	src="./app-format.png"
+	width=50%	
+	alt"normal content, webview based, Native app"></img>
+	-->
+	isSettablle -&gt; isHVAC -&gt; isSafe -&gt; OK
+	<br>
+	<figcaption>
+	<span class=j> setメソッドの提供判定 </span>
+	<span class=e> Decision flow to provide set </span>
+   	</figcaption>
+</figure>
+
+<!-- 変更set/get/subscribeの紹介 -->
+<p class=j>幾つかのデータポイントについてはsetがそもそも相応しくない。例えば
+燃料種別(FuelType)や車の姿勢(Gyro)などは変更できるものではない。
+エンジンスピード(EnglineSpeed)や走行距離(distanceSinceTotal)など
+安全上、あるいはメンテナンス上変更すべきでないものも存在する。
+これらに対するSetの呼び出しはinvalid_operationとして処理されるべきである。
+<p class=e>***
+
+<!-- 注意事項の導入 -->
+<p class=j>Setインターフェースは空調など、いわゆるHVACへの利用を想定して提供されている。
+実装者は安全性を検討した上で、これらへのアクセスをinvalid_operationとすることもできる。
+<p class=e>***
+
+<!-- set実装上の注意-->
+<p class=j>
+setをサポートする場合、リソース競合を起こさないよう慎重な設計が求められる。
+
+例えばVehilcle APIを利用するアプリケーションA, Bが同時に動作する場合を考える。
+アプリAが温度をあげようとし、アプリBが温度を下げようとすると矛盾が生じる。
+また、アプリAが雨を検知し窓とサンルーフを閉じようとした場合に、
+アプリBが窓の操作をロックしていると、一貫性のある動作を提供できなくなる。
+
+
+
+<!-- 旧
+
+現在のSpecはデータポイントのロック機構をサポートしないため、
+少なくとも、「setを行うことのできるContentがIVI上でたかだか一つであること」を保証しなくてははならない。
+
+そうでない場合、一つのデータポイントに対し相反する2つの入力が与えられたり、
+2つののデータポイントを同時に操作するべき時に片方しか操作できないといった問題が生じうる。
+
+<p class=e>Vehicle Information Access API defines get/set/subscribe. 
+It requires careful design from the point of the resource race if an implementation supports the set method.
+Current spec doesn't support lock mechanism of data-point.
+Therefor system must ensure that at most only one content exists at the same time which is able to access set-methods.
+
+Otherwise one data-point may receive more than two contradict input.
+Or a content may set only one data-point even when the content need to change more than two data-point all together.
+
+
+
 <p class=j>
 Vehicle APIsを含むW3C規格は、双方のモデルに含まれるWebContentとRuntimeの関係を重視し、
 正しいコンテンツがRuntimeの機能を正しく利用できることを要請する。
@@ -694,19 +1113,20 @@ While, considering IVI security, the relationship between runtime and operating 
 Here are points***.
 
 <ul class=j>
-	<li> Vehille APIを経由したリクエストが複数のコンテンツから送らる際、リソースへの競合は適切に処理されるべきである。
-	<li> Vehicle APIの利用パーミッションはWebコンテンツごとに適切に管理されるべきである。
+	<li> Vehille APIを経由したリクエストが複数のコンテンツから送らる際、
+	リソースへの競合は適切に処理されるべきである。
+	<li> Vehicle APIsの利用パーミッションはWebコンテンツごとに適切に管理されるべきである。
 </ul>
 
 <ul class=e>
-	<li> Even if several contents send request at the same time via Vehicle API,
+	<li> Even if several contents send request at the same time via Vehicle APIs,
 	resource race should be appropriately solved.
-	<li> Permission of Vehicle API for each Web Content should be managed independently.
+	<li> Permission of Vehicle APIs for each Web Content should be managed independently.
 </ul>
 
 <p class=j>Vehicle Information Access APIが定めるget/set/subscribeのうち、setをサポートする場合、リソース競合の観点から
 慎重な設計が求められる。現在のSpecはデータポイントのロック機構をサポートしないため、
-少なくとも、「setを行うことのできるContentがIVI上でたかだか一つであること」を保証し無くてはならない。
+少なくとも、「setを行うことのできるContentがIVI上でたかだか一つであること」を保証しなくてははならない。
 
 そうでない場合、一つのデータポイントに対し相反する2つの入力が与えられたり、
 2つののデータポイントを同時に操作するべき時に片方しか操作できないといった問題が生じうる。
@@ -718,20 +1138,84 @@ Therefor system must ensure that at most only one content exists at the same tim
 
 Otherwise one data-point may receive more than two contradict input.
 Or a content may set only one data-point even when the content need to change more than two data-point all together.
+-->
+
+
+
 </section>
 
 <section>
-<h3> <!-- sec 3 -->
-	<span class=j>通信</span>
-	<span class=e>Connection</span>
+<h3> <!-- sec 6 -->
+	<span class=j>ベストプラクティス</span>
+	<span class=e>Best Practice</span>
 	</h3>
+
+<p class=j>
+WebAPIの利用はオリジン単位で管理され、ユーザーの意思に基づき許諾されてきた。
+API実装者はその考え方にしたがって、Vehicle APIsの利用に際してユーザーに何らかの選択肢を与えるべきである。
+<p class=e>
+To access to some kind of Web API, each [[!ORIGIN]] need permission which is granted by User Agent
+on behalf of end user.
+Implementer should keep this manner and provide option that end-user can present their preference.
+<!-- TODO 意図が不明瞭 -->
+
+
+
+
+
+<p class=j>
+Vehilcle APIは詳細なインターフェースを提供するため、実装者の視点で開示が望ましくないものも含まれる。
+そのようなデータポイントについては、APIの定義にそって提供を行わないこともできる。
+更に進んで、ユーザーを保護するという観点から、特定の組織や、許諾を与えたコンテンツにのみAPIの利用を
+認めたい場合が考えられる。そのためのいくつかの選択肢を示す。
+
+<p class=e>
+Vehicle APIs defines interfaces for details data and some of them could be not preferable to be public
+from the perspective of implementers. Spec allows implementer not to expose these data-points.
+
+Moreover, an implementer may considers users benefit and would like to expose some of data-points
+only to certain organizations or authorized contents. Here are some best practice to realize such access control.
+<!-- TODO 意図が不明瞭 -->
+
+<ol>
+	<li class=j> Runtimeは実行中のWebContentsのオリジンを知ることができる。Vehicle APIsにアクセスが試みられた際、内部に持つホワイトリスト
+	と突合し、予め認められたオリジンにのみAPIの利用を許可することができる。
+	<li class=e> Web-runtime is able to recognize the origin of executing web contents.
+	So it could allow the origin to access the API only if the origin is listed in a predefined white list.
+
+	<!-- これはaccesscontrolなのか -->
+	<li class=j> LocalにProxyサーバーを設けて外部との通信を経由させ、
+	問題があると判断されたVehicle APIsの呼び出しをサニタイズすることができる。
+	<li class=e> IVI could obtain sanitized code by running a web-proxy server inside of IVI and passing all data throw the proxy.
+
+
+	<!-- TODO Service Specに譲るべき？  -->
+	<li class=j> APIがポリフィルとして実装され、それがローカルのWebサーバと通信する場合、そのWebサーバは
+	[[!OAuth]] で利用されるHTTPヘッダを使ってリクエストをフィルタすることができる。
+	<li class=e> If the API is implemented as a polyfill and it communicates with <i>local</i> web server, the web server
+	could filter requests by a specific HTTP header that is used in
+	[[!OAuth]] framework
+
+	<!-- TODO Service Specに譲るべき？  -->
+	<li class=j> APIがポリフィルとして実装され、それがローカルのWebサーバと通信する場合、そのWebサーバは
+	could filter requests by the [[!CORS]] を利用してリクエストをフィルタすることができる。
+	<li class=e> If the API is implemented as a polyfill and it communicates with <i>cloud</i> web server, the web server
+	could filter requests by the [[!CORS]] framework.
+
+	<!-- TODO ちょっと投げやりな感じがある -->
+	<li class=j> IVIがネイティブアプリケーションをサポートするのであれば
+	Native OSのパーミッションモデル、Native OSでのマーケットシステムを利用することにより、APIの利用を制限することができる。
+	<li class=e> If IVI supports native application,
+	permission model of native OS and a market system for the OS could be utilized to reject suspicious applications.
+</ol>
+</section>
 </section>
 
 <!-- ------------------------------------------------------------------------ -->
 <section> <!-- sec 4 --> 
 <h3 id="privacy">
-	<span class=j>プライバシーの保護</span>
-	<span class=e>Privacy Protection</span>
+	<span class=j>データーに対するユーザーの権利</span>
+	<span class=e>User's right for their data</span>
 	</h3>
 
 <p class=j>
@@ -746,52 +1230,32 @@ Therefore, these vehicle data and its location data should be treated as object 
 However, privacy protection may differ by individual, by situation, and by local regulation.
 
 <p class=j>
-サービス提供者は、VehicleAPIによって得た情報をIVIの外へ送出しようとする場合、
-ユーザのプライバシーを保護しなくてはならない。
-具体的に下記に対応して、ユーザのpreferenceに沿った運用を行わなくてはならない。
+サービス提供者は、Vehicle APIsによって得た情報をIVIの外へ送出しようとする場合、
+ユーザーのプライバシーを保護しなくてはならない。
+具体的には下記の項目について、ユーザーの希望に沿った運用を行わなくてはならない。
 
+<p class=e>
 Service provider must protect end-user's privacy when they send out location or information from Vehicle APIs.
 Followings should be proceeded and information has to be treated in complying with user preferences.
 
 <ul>
-	<li class=j> 送信先を明示して、情報を送出することについて許諾を得ること
-	<li class=e> App should present destination and get users consent on sending out the information.
-	<li class=j> 個々のデータ（特に位置と速度）に関してユーザが送出するデータの粒度を変更できること
-	<li class=e> User should be able to granularity of data (especially location and speed).
-	<li class=j> ユーザが過去に送られたデータを確認し、削除できること
-	<li class=e> User should be able to check past sent data and remove them if user wish.
-	<li class=j> ユーザが送られたデータの管理方法を確認できること
-	<li class=e> User should be able to see how the collected data is managed.
+	<li><span class=j> 送信先を明示して、情報を送出することについて許諾を得ること</span>
+	<span class=e> App should present destination and get users consent on sending out the information.</span>
+	<li><span class=j> 個々のデータ（特に位置と速度）に関してユーザーが送出するデータの粒度を変更できること</span>
+	<span class=e> User should be able to granularity of data (especially location and speed).</span>
+	<li><span class=j> ユーザーが過去に送られたデータを確認し、削除できること</span>
+	<span class=e> User should be able to check past sent data and remove them if user wish.</span>
+	<li><span class=j> ユーザーが送られたデータの管理方法を確認できること</span>
+	<span class=e> User should be able to see how the collected data is managed.</span>
 </ul>
 
 <p class=j>
-一つの車両は複数のドライバーに利用され、一人のドライバーは複数の車両を利用すると考えられる。
-サービス提供者は、そのような状況を踏まえ、ある人のデータやプリファレンスが
-別のユーザから閲覧できないようにする必要がある。
+ユーザエージェントは、あるサイトから得られたアプリケーションがVehicle Access Information API***で
+車両情報を要求した場合、ユーザーに許諾を求めるべきである。
 
-<p class=e>
-An individual may drive a car owned by others. An individual may drive multiple cars.
-Service provider take this situation into consider and should manage one's preference so that
-others cannot see the preference.
-
-<p class=j>
-IVIの実装者は、ユーザ毎にUser Agentが扱うユーザプロファイルが異なるように設計を行うべきである。
-そのような実装はデスクトップ向けPCをはじめとし多数の例がある。
-
-<p class=e>
-****
-
-<!-- fido -->
-<p class=j>
-一方でサービス提供者は、一台の端末を複数のユーザが共有することを想定するべきである。
-ユーザの識別にはアカウント・パスワードが用いられてきたが、IVIのUIとしては好ましくない。
-[[!FIDO]]
-のような方法で安全性と利便性の両立をはかるべきだろう。
-
-<p class=e>
-****
-
-
+この許諾結果は保存してもよいが、ユーザーが希望するときには不許諾に変更するユーザーインターフェースを
+持たなくてはならない。
+<p class=e>****
 
 <!--
 
@@ -830,13 +1294,13 @@ implementerは（やろうと思えば）Vehicle APIs経由のデータ提供を
 や各種情報が他人に知られたり、変更されないような仕組みも
 必要である。
 
-Vehicle APIsの提供するデータはすべてユーザに属するものであり、原則としてすべて保護されるべきプライベートな情報である。
+Vehicle APIsの提供するデータはすべてユーザーに属するものであり、原則としてすべて保護されるべきプライベートな情報である。
 Vehilce APIs実装者はDNTを実装するとともに、API使用に際して適切なパーミッション機構を設けるべきである。
 
 またAPIの利用者は、車両の情報を利用するにあたってはわかりやすい許諾をユーザーに得るべきであり、
 DNTが指定されたリクエストに関し、勧告の趣旨に沿った適切な配慮を行うべきである。
 -->
-
+<!-- ------------------------------------------------------------------------ -->
 <section>
 <h4>
 	<span class=j>DNTとその例外</span>
@@ -848,8 +1312,7 @@ DNTが指定されたリクエストに関し、勧告の趣旨に沿った適�
 はWeb Applicationに対し自己のトラッキングを行わないように要求するための
 HTTP ヘッダについての勧告であり、広くサポートされている。
 車両では交通事故等、生命・財産の危機に瀕することがあり、
-その場合は一時的にDNT機能をOFFにすることも検討すべきである。
-
+その場合は一時的にDNT機能をOFFにすることを検討すべきである。
 <p class=e>
 <!-- 日本語とずれている -->
 The Do Not Track ([[!DNT]]) is the proposed HTTP header field that requests
@@ -857,6 +1320,14 @@ that a web application disable either its tracking or cross-site user tracking o
 
 In view of peculiarity of Automobile, in the event of emergencies to protect the vital interests
 and property (vehicle) of an individual, temporal deactivation of DNT function may be required.
+
+<p class=j>
+DNTを含め、緊急時におけるプライバシーの保護の例外は、暗黙裡に認められるものではない。
+タスクフォースに提供されたアンケート結果からは、たとえ緊急時であっても
+自己のプライバシー情報の開示したくないとする意見が一定数いることがわかっている。
+サービス提供者は緊急時のデーターの取り扱いについて明示的にユーザーの許諾を得ておくべきである。
+<p class=e>***
+
 
 <!--
 <p>
@@ -879,79 +1350,139 @@ Vehicle Information Access APIはデータポイントに対しget/set/subscribe
 HVAC系については必要であるとの意見もあり、API Spec上は特に制限を設けていない。
 実際に提供するかどうかの判断は実装者に委ねられている。
 
-一方プライバシについては、APIの利用者が一義的に配慮しなくてはならない。
-表1はVehicle APIを経由して得ることのできる（あるいは将来得られるようになる可能背性のある）データ
+一方プライバシーについては、APIの利用者が一義的に配慮しなくてはならない。
+表1はVehicle APIsを経由して得ることのできる（あるいは将来得られるようになる可能背性のある）データ
 をまとめたものであり、タスクフォースが特に慎重な配慮を要すると考えるものはマーク付されている。
 
-API実装者はエンドユーザの意思を反映するため、Access Control等、何らかの方法でAPIの利用を制限すべきである。
+API実装者はエンドユーザーの意思を反映するため、Access Control等、何らかの方法でAPIの利用を制限すべきである。
 -->
+<!-- ------------------------------------------------------------------------ -->
 </section>
-</section>
-
 <section>
-<h3> <!-- sec 5 -->
-	<span class=j>マルチドライバー</span>
-	<span class=e>Multi driver</span>
-	</h3>
-</section>
+<h4> <!-- sec 5 -->
+	<span class=j>複数の運転者と利用者</span>
+	<span class=e>Multi drivers/users</span>
+</h4>
 
-
-
-<section>
-<h3> <!-- sec 6 -->
-	<span class=j>アクセスコントロールのベストプラクティス</span>
-	<span class=e>Best Practice on Access control</span>
-	</h3>
-
-<p class=j>
-WebAPIの利用はオリジン単位で管理され、ユーザの意思に基づき許諾されてきた。
-API実装者はその考え方にしたがって、Vehicle APIの利用に際してユーザに何らかの選択肢を与えるべきである。
-
-<p class=e>
-To access to some kind of Web API, each [[!ORIGIN]] need permission which is granted by User Agent
-on behalf of end user.
-Implementer should keep this manner and provide option that end-user can present their preference.
-
-<p class=j>
-Vehilcle APIは詳細なインターフェースを提供するため、実装者の視点で開示が望ましくないものも含まれる。
-そのようなデータポイントについては、APIの定義にそって提供を行わないこともできる。
-更に進んで、ユーザを保護するという観点から、特定の組織や、許諾を与えたコンテンツにのみAPIの利用を
-認めたい場合が考えられる。そのためのいくつかの選択肢を示す。
-
-<p class=e>
-Vehicle APIs defines interfaces for details data and some of them could be not preferable to be public
-from the perspective of implementers. Spec allows implementer not to expose these data-points.
-
-Moreover, an implementer may considers users benefit and would like to expose some of data-points
-only to certain organizations or authorized contents. Here are some best practice to realize such access control.
+<!-- 複数ドライバーのプライバシー -->
+<p class=j> 一台の車には複数の運転者が想定される。それらの運転手は家族であるかもしれないし、職務上の同僚かもしれない。
+IVIは、個人向けに設定される情報がある場合には、それら複数の運転者それぞれのプライバシーが守られるよう配慮すべきである。
+個人毎に切り替えられるべき情報の例を以下に示す。
+<p class=e> ****
 
 <ol>
-	<li class=j> Runtimeは実行中のWebContentsのオリジンを知ることができる。Vehicle APIにアクセスが試みられた際、内部に持つホワイトリスト
-	と突合し、予め認められたオリジンにのみAPIの利用を許可することができる。
-	<li class=e> Web-runtime is able to recognize the origin of executing web contents.
-	So it could allow the origin to access the API only if the origin is listed in a predefined white list.
+	<li>
+		<span class=j>フォームに入力したパスワード、索語等のデータ</span>
+		<span class=e>***</span>
+	</li> 
 
-	<!-- これはaccesscontrolなのか -->
-	<li class=j> LocalにProxyサーバーを設けて外部との通信を経由させ、
-	問題があると判断されたVehicle APIの呼び出しをサニタイズすることができる。
-	<li class=e> IVI could obtain sanitized code by running a web-proxy server inside of IVI and passing all data throw the proxy.
+	<li>
+		<span class=j>クレジットカード等の金銭的なデータ</span>
+		<span class=e>***</span>
+	</li> 
 
-	<li class=j> APIがポリフィルとして実装され、それがローカルのWebサーバと通信する場合、そのWebサーバは
-	[[!OAuth]] で利用されるHTTPヘッダを使ってリクエストをフィルタすることができる。
-	<li class=e> If the API is implemented as a polyfill and it communicates with <i>local</i> web server, the web server
-	could filter requests by a specific HTTP header that is used in
-	[[!OAuth]] framework
-	
-	<li class=j> APIがポリフィルとして実装され、それがローカルのWebサーバと通信する場合、そのWebサーバは
-	could filter requests by the [[!CORS]] を利用してリクエストをフィルタすることができる。
-	<li class=e> If the API is implemented as a polyfill and it communicates with <i>cloud</i> web server, the web server
-	could filter requests by the [[!CORS]] framework.
+	<li>
+		<span class=j>閲覧履歴</span>
+		<span class=e>***</span>
+	</li> 
 
-	<li class=j> IVIがネイティブアプリケーションをサポートするのであれば
-	Native OSのパーミッションモデル、Native OSでのマーケットシステムを利用することにより、APIの利用を制限することができる。
-	<li class=e> If IVI supports native application,
-	permission model of native OS and a market system for the OS could be utilized to reject suspicious applications.
+	<li>
+		<span class=j>Cookie, IndexDBなどのサイトデータ</span>
+		<span class=e>***</span>
+	</li> 
 </ol>
+
+<!-- シチュエーションの違い -->
+<p class=j> 同一のユーザーであっても、利用される状況が異なることが考えられる。
+家族のドライビングと職務上の移動ではふさわしいコンテンツが異なる可能性がある。
+アプリはこのような、状況変化を想定し、個人の趣味嗜好に基づくコンテンツを提示する場合には
+利用者の意図を確認するようなUIを提供すべきである。
+
+<!-- 所有者のドライバーの権限 -->
+<p class=j> ドライバーが車の所有者とは限らないケースがある。例えば会社が所有する車であったり、レンタカーとして提供される場合が考えられる。
+このようなケースではIVIの管理者権限は所有者に与えられ、運転者が操作できるべきではない。
+所有者にのみ認められるべき権限の例を以下に示す。
+<p class=e> ****
+
+<ol>
+	<li>
+		<span class=j>ユーザーの追加と削除</span>
+		<span class=e>***</span>
+	</li> 
+
+	<li>
+		<span class=j>アプリケーションの追加と削除</span>
+		<span class=e>***</span>
+		</li> 
+
+		<!-- 他にないのか？？ -->
+</ol>
+
+<!-- プライバシーと権限 -->
+<p class=j>原則としてドライバーのプライバシーに関わる情報は、所有者であっても許可無く開示されるべきではない。
+ユーザーの利便性を考慮して開示を行う場合には、IVIはドライバーが情報を入力する際にその旨を通告すべきである。
+
+<p class=e> ****
+
+<!-- ユーザー毎の処理の切り替え -->
+<p class=j>上記を実現するためにはIVIがユーザー認証とログイン処理を行う必要がある。
+OSレベルで対応することが自然であるが、Web Runtimeが対応しても差し支えない。
+<p class=e>****
+
+<!-- FIDOと利便性 -->
+<p class=j>
+一方でサービス提供者は、一台の端末を複数のユーザーが共有することを想定するべきである。
+ユーザーの識別にはアカウント・パスワードが用いられてきたが、IVIのUIとしては好ましくない。
+[[!FIDO]]
+のような方法で安全性と利便性の両立をはかるべきだろう。
+
+<p class=e>
+****
+
+
+<!-- 以下古い部分 -->
+
+<p class=j>
+一つの車両は複数のドライバーに利用され、一人のドライバーは複数の車両を利用すると考えられる。
+サービス提供者は、そのような状況を踏まえ、ある人のデータやプリファレンスが
+別のユーザーから閲覧できないようにする必要がある。
+
+<p class=e>
+An individual may drive a car owned by others. An individual may drive multiple cars.
+Service provider take this situation into consider and should manage one's preference so that
+others cannot see the preference.
+
+<p class=j>
+IVIの実装者は、ユーザー毎にUser Agentが扱うユーザープロファイルが異なるように設計を行うべきである。
+そのような実装はデスクトップ向けPCをはじめとし多数の例がある。
+
+<p class=e>
+****
+
+
+<!-- TODO 追加必要 -->
+
+</section><!-- endof Multi drivers/users -->
+
+
+</section>
+</section>
+
+<section>
+<h2>
+	<span class=j>残されている課題</span>
+	<span class=j>Remaining Issues</span>
+</h2>
+
+<p class=j>本項で触れた幾つかの問題はWeb技術とデバイスの制御、セキュリティーの3つが関連する課題であり、
+Vehicle APIsの新しいバージョンあるいは、下記のグループ等とのより一般的なSpecによって規定される可能性がある。
+
+<ul>
+	<li>認証Payment WG
+	<li>データのIntegrity Hardware community group
+	<li>センサーへのAPI generic sensor api
+	<li>ローカルサーバ Wot IG
+</ul>
 </section>
 
 
