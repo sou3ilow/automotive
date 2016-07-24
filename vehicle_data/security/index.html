@@ -200,7 +200,16 @@ This document supposes an IVI (In-Vehicle Infotainment system),
 and presents typical architectures, recommendation to be referred and privacy protection.
 It also describes best practices for restricting API use for specific developers or application
 
+<p class=j>
+なお、本項は網羅的なリスク評価を行うものではないことに留意する。
+その代わり、特に注意が必要な点について議論する。
+
+<p class=e>
+This document does not provide a comprehensive risk assessment for IVI with Vehicle APIs.
+Instead of that, this document discusses points that required special attention.
+
 <!-- SafetyとSecurityについて記載しておきたい。 -->
+<!--
 <p class=j>
 なお、本項は網羅的なリスク評価を行うものではないことに留意する。
 例えば車とサーバーの間の通信が偽装される可能性については検討するが、
@@ -209,6 +218,7 @@ It also describes best practices for restricting API use for specific developers
 <p class=e>
 This document does not provide a comprehensive risk assessment for IVI with Vehicle APIs.
 For instance possibility of falsification of data will be discussed but its impact is not.
+-->
 
 </section>
 
@@ -225,7 +235,7 @@ For instance possibility of falsification of data will be discussed but its impa
 
 <!-- APIの用途はIVIである。-->
 <p class=j>
-Automotive WG は乗用車の IVI(In-Vehicle Infotainment System) への実装を想定して、
+Automotive WG は乗用車の IVI (In-Vehicle Infotainment System) への実装を想定して、
 Vehicle Access API,
 Vehicle Data Specification,
 Vehicle Information Service Specification を策定した。
@@ -239,7 +249,7 @@ PC向けではないこれらのAPIに特有の課題を調査・検討するた
 
 この文書はそのタスクフォースの成果をまとめたものである。
 <p class=e>
-For the use on passenger car's IVI(In-Vehicle Infortainment System),
+For the use on passenger car's IVI (In-Vehicle Infotainment System),
 Automotive WG published
 three specifications:
 Vehicle Access API,
@@ -273,11 +283,11 @@ Hence, this document focuses on not only API implementation but also IVI design.
 Document structure is as follows: 
 Section 2 lists up API use cases and concerns that the task force has collected.
 Before discussing each concern, section 3 provides a model architecture of IVI,
-its environment and composition of Web Runtime and applications.
+its environment and composition of Web runtime and applications.
 And section 4 introduces fundamental Web security technologies which are commonly supported on today's browser
 and should be supported on IVI as well.
 Then section 5 extracts requirements from the use cases and shows strategies to tackle on them.
-Finally section 6 gives an overview of on-going activities that are taken for web, automotive, security and privacy.
+Finally, section 6 gives an overview of on-going activities that are taken for web, automotive, security and privacy.
 
 
 <!-- Safety & Security -->
@@ -409,9 +419,7 @@ explicitly marked as non-normative, examples, and notes. [[!RFC2119]]</p>
 </section>
 </section>
 
-<!-- ------------------------------------------------------------------------ -->
 <section>
-
 <h2>
 	<span class=j>APIのユースケース</span>
 	<span class=e>Use cases of APIs</span></h2>
@@ -419,6 +427,7 @@ explicitly marked as non-normative, examples, and notes. [[!RFC2119]]</p>
 <p class=j>
 Automotive WGではVehicle APIsの策定の仮定で、将来的な拡張を含めどのようなユースケースが想定され、
 また懸念される事項が何であるか調査を行った。下記はそのリストである。
+<span class=todo>この章の記載自体は自由な発想に基づくもので、requirementsでも実現可能でも無いことを注記しておくべきか。</span>
 
 <p class=e>
 On the process of Vehicle APIs formulation,
@@ -427,192 +436,690 @@ that would be brought by current APIs or their future revisions.
 
 Following is the summarized item list:
 <ol>
-	<li>
-		<span class=j>侵入・攻撃への対策</span>
-		<span class=e>Protection against intrusion and attack</span>
-		<ul>
-			<li class=e>
-				<!--1.(48)-->
-				<span class=j>車両が不正に侵入された場合運転者または所有者にそれが知らされること。</span>
-				<span class=e>Driver/Owner wants to be alerted if their car is intrude</span>
-			</li>
-			<li>
-				<!--1.(50)-->
-				<span class=j>運転中他の利用者はログインも車の制御も出来ないこと。</span>
-				<span class=e>During the driving, prevent other users from login and controlling the vehicle</span>
-			</li>
-		</ul>
+<!--<li>
+	<span class=j>侵入・攻撃への対策</span>
+	<span class=e>Protection against intrusion and attack</span>
+	<ul>
+-->
+
+<li>
+<span class=note>1.(48)</span>
+<span class=j><b>不正侵入の通知</b>
+車両が不正に侵入された場合運転者または所有者にそれが知らされること。</span>
+<span class=e><b>Intrusion Alert</b>
+Driver/Owner wants to be alerted if their car is intruded</span>
+</li>
+
+<li>
+<span class=note>1.(50)</span>
+<span class=j><b>排他的な操作</b>
+運転中他の利用者はログインも車の制御も出来ないこと。</span>
+<span class=e><b>Exclusive Control</b>
+During the driving, prevent other users from login and controlling the vehicle</span>
+</li>
+
+<!--
+<li>
+<span class=note>2.(02) 現状と反するところがあるので検討が必要 </span>
+<span class=j><b>リモート操作の排除</b>
+   	************</span>
+<span class=e><b></b>
+   	As a driver, I don't want any remote person to control my car (eg. speed, door lock etc.)</span>
+</li>
+-->
+
+<!--
+	</ul>
 	</li>
 	<li>
-		<span class=j>V2X とデータの完全性(integrity)</span>
-		<span class=e>V2X and Data Integrity</span>
-		<ul>
-			<li> 
-				<span class=note> --4.(04)-- </span>
-				<span class=j>保険サービスを行うため、車両から得られるデータは改ざんされていてはいけない。</span>
-				<span class=e> As an insurer, I need to be sure that probe data is not tampered.</span>
-			</li>
-			<!-- 
-			<li>
-				<span class=note> --4.(07)-- </span>
-				<span class=j>ADASは認証されたオンボードセンサーの値を受理する。</span>
-				<span class=e>Advanced Driver Assistance System (ADAS) Controller accepts input from authorized onboard sensors</span>
-			</li>
-			<li>
-				<span class=note>--4.(10)--</span>
-				<span class=e>ADASは認証された外部のデータを受理する</span>
-				<span class=e>Advanced Driver Assistance System (ADAS) Controller accepts input from authorized external source(s)</span>
-				</li>
-			-->
-			<li>
-			<span class=j>ADASのようなシステムは認証されたオンボードのセンサ、外部ソースのデータを受理する。</span>
-					<span class=e>***</span>
-			</li>
-			<li>
-				<span class=note> --4.(12)-- </span>
-				<span class=j>ドライバーはドライブを仮想の同乗者と楽しみたい</span>
-				<span class=e>Driver and/or passenger(s) in car want to share journey with virtual passenger(s) that are not in car</span>
-			</li>
+	<span class=j>V2X とデータの完全性(integrity)</span>
+	<span class=e>V2X and Data Integrity</span>
+	<ul>
+-->
 
-			<!--
-			<li>
-			<span class=note 4.(14) </span>
-				<span class=j>途中で切れているので再確認</span>
-				<span class=e>Vehicle owner/driver/passenger sharing with individual parties commercial or personal</span>
-				</li>
-			-->
-			<li>
-				<span class=note>!--4.(52)--</span>
-				<span class=j>
-					車両のセンサー、カメラを家庭のセキュリティアラームシステムへの入力として利用できる。
-				</span>
-				<span class=e> Sensors and cameras in the car are included in the set of sensors providing input to customer
-					(and e.g. neighbours) home security alarm. </span>
-				<span class=note>
-					To do this the vehicle and home alarm system will need to mutually authenticate
-					so that home alarm trusts inputs and customer's vehicle only provides input to alarm system(s)
-					selected by the customer. 
-					Normally just their own system, but e.g. in future,
-					a neighbourhood watch group could agree to share external sensor / camera data</span>
-			</li>
+<li> 
+<span class=note> --4.(04)-- </span>
+<span class=j><b>データ改ざん防止</b>
+	保険サービスを行うため、車両から得られるデータは改ざんされていてはいけない。</span>
+<span class=e><b>Anti-tampered Data</b>
+   	As an insurer, I need to be sure that probe data is not tampered.</span>
+</li>
 
-			<li>
-				<span class=note>!--4.(53)--</span>
-				<span class=j> ユーザーの所有する音楽、動画などのデーターは車、クラウドどこにあるとかかわらずシームレスに利用できる</span>
-				<span class=e>
-					Media (including photos, videos, music (subject to DRM licencing)) is seamlessly shared
-					between all of the user's devices including their car and with offline cloud storage
-					e.g User's Dropbox, OneDrive etc account.</span>
-				<span class=note>
-					User can seamlessly view and play their content on any device including their car.
-					Requires that each device or service that the user has content stored on can securely share the user's content.
-					To do this, either the device or the identity of the user logged in on the device or service
-					will need to be verified before content can safely and securely be shared between devices.
-					If content is to be seamlessly downloaded from cloud storage, may need to obtain and use security token
-					(e.g. OAUTH2) to access user's content. </span>
-			</li>
-			<li>
-				<span class=note> --4.(54)-- </span>
-				<span class=j>車両は、所有者の冷蔵庫と信頼できるコミュニケーションを取る。
-					プライバシーが守られなくてはならない。 </span>
-				<span class=e> Vehicle needs to trust that the input comes from the fridge in the customer's home
-					and needs to establish identity of customer's fridge in order to trust input.</span>
-				<span class=note>Fridge should only communicate with customer's vehicle
-				   	(and any other parties authorised by the customer)
-					in part to protect customer's privacy. </span>
-			</li>
-			<li>
-				<span class=e><!--4.(55)-->Vehicle suspension sensors, front facing cameras etc can detect damage to road surface (potholes, broken manholes, broken drain covers etc) and communicate location and details of damage to other vehicles and to the local authority responsible for repairing roads. Vehicle needs to prove its identity to other vehicles and to local authority service so that input can be trusted.
-		</ul>
-	</li>
 
-	<li> 
-		<span class=j>Set メソッド</span>
-		<span class=e>Set method</span>
-		<ul>
+<!--
+<li>
+<span class=note> --4.(07)-- </span>
+<span class=j>ADASは認証されたオンボードセンサーの値を受理する。</span>
+<span class=e>Advanced Driver Assistance System (ADAS) Controller accepts input from authorized onboard sensors</span>
+</li>
 
-		<li class=e><!--2.(02)-->As a driver, I don't want any remote person to control my car (eg. speed, door lock etc.)
-		<li class=e><!--2.(11)-->Advanced Driver Assistance System (ADAS) Controller sets safety critical controls when driving vehicle
-		<li class=e><!--2.(16)-->IVI system shows the status of various climate control equipments as GUI and lets a user control it via touch screen.(Even set API is not recommended)
-		<li class=e><!--2.(17)-->A user uses his smart devices to remotely check whether side windows of his parked car are closed or not, and to send a request to the car for closing it if opened.
-		<li class=e><!--2.(18)-->A user uses his smart devices to start his car remotely, and turns heaters on to warm up the car inside before getting in the car.
-		<li class=e><!--2.(25)-->Driver would like to remotely lock/unlock vehicle.
-		<li class=e><!--2.(26)-->Driver would like to remotely start vehicle and turn on/set heat or air conditioner
-		<li class=e><!--2.(28)-->Driver would like to configure seat settings remotely.
-		<li class=e><!--2.(31)-->Automaker would only like to allow API to access data from their remote servers not directly from car.
-		<li class=e><!--2.(32)-->Automaker only wants to allow remote settings via cloud not by direct connection.
-		<li class=e><!--2.(34)-->Ted a tall driver of the family car approaches the car and the seat adjusts to his settings
-		<li class=e><!--2.(42)-->Customer has the ability to set HVAC controls.
-		<li class=e><!--2.(43)-->Airbag has deployed the event is captured.
-		<li class=e><!--2.(49)-->One "Set" API is only allowed to accept input from one source at one moment
-		</ul>
-	</li>
+<li>
+<span class=note>--4.(10)--</span>
+<span class=e>ADASは認証された外部のデータを受理する</span>
+<span class=e>Advanced Driver Assistance System (ADAS) Controller accepts input from authorized external source(s)</span>
+</li>
+-->
 
-	<li>
-		<span class=j>API のアクセスコントロール</span>
-		<span class=e>API access control</span>
-		<ul>
+
+<li>
+<span class=j><b>認証されたデバイス</b>
+	ADASのようなシステムは認証されたオンボードのセンサ、外部ソースのデータを受理する。</span>
+<span class=e><b>Authorized Device</b>
+	High-reliability system, such as 
+	Advanced Driver Assistance System (ADAS) Controller, accepts input from authorized onboard
+   	sensors or authorized external source(s)</span>
+	
+	
+	</span>
+</li>
+<li>
+<span class=note> --4.(12)-- </span>
+<span class=j><b>仮想的な同乗</b>
+	ドライバーはドライブを仮想の同乗者と楽しみたい</span>
+<span class=e><b>Virtual Trip</b>
+	Driver and/or passenger(s) in car want to share journey with virtual passenger(s) that are not in car</span>
+</li>
+
+
+<!--
+<li>
+<span class=note 4.(14) </span>
+<span class=j>途中で切れているので再確認</span>
+<span class=e>Vehicle owner/driver/passenger sharing with individual parties commercial or personal</span>
+</li>
+-->
+
+<li>
+<span class=note>!--4.(52)--</span>
+<span class=j><b>ホームセキュリティとの連携</b>
+   	車両のセンサー、カメラを家庭のセキュリティアラームシステムへの入力として利用できる。 </span>
+<span class=e><b>Home Security**</b>
+   	Sensors and cameras in the car are included in the set of sensors providins input to customer (and e.g. neighbours) home security alarm. </span>
+<span class=note>
+	To do this the vehicle and home alarm system will need to mutually authenticate
+	so that home alarm trusts inputs and customer's vehicle only provides input to alarm system(s)
+	selected by the customer. 
+	Normally just their own system, but e.g. in future,
+	a neighbourhood watch group could agree to share external sensor / camera data</span>
+</li>
+
+<li>
+<span class=note>!--4.(53)--</span>
+<span class=j><b>シームレスなデータ利用</b>
+	ユーザーの所有する音楽、動画などのデーターは車、クラウドどこにあるとかかわらずシームレスに利用できる</span>
+<span class=e><b>Seamless Data Use</b>
+	Media (including photos, videos, music (subject to DRM licensing)) is seamlessly shared
+	between all of the user's devices including their car and with offline cloud storage
+	e.g., User's Dropbox, OneDrive etc account.</span>
+<span class=note>
+	User can seamlessly view and play their content on any device including their car.
+	Requires that each device or service that the user has content stored on can securely share the user's content.
+	To do this, either the device or the identity of the user logged in on the device or service
+	will need to be verified before content can safely and securely be shared between devices.
+	If content is to be seamlessly downloaded from cloud storage, may need to obtain and use security token
+	(e.g. OAUTH2) to access user's content. </span>
+</li>
+
+<!-- 4.53とかぶっているので
+<li>
+<span class=note> --4.(54)-- </span>
+<span class=j><b>車両は、所有者の冷蔵庫と信頼できるコミュニケーションを取る。
+	プライバシーが守られなくてはならない。 </span>
+<span class=e> Vehicle needs to trust that the input comes from the fridge in the customer's home
+	and needs to establish identity of customer's fridge in order to trust input.</span>
+<span class=note>Fridge should only communicate with customer's vehicle
+	(and any other parties authorised by the customer)
+	in part to protect customer's privacy. </span>
+</li>
+-->
+
+
+<li>
+<span class=note>-4.(55)--</span>
+<span class=j><b>公共交通情報システムとの連携</b>
+   	************</span>
+<span class=e><b>Public Traffic System***</b>
+	Vehicle suspension sensors, front facing cameras etc can detect damage to road surface
+	(potholes, broken manholes, broken drain covers etc) and communicate location and details of damage 
+	to other vehicles and to the local authority responsible for repairing roads.
+	Vehicle needs to prove its identity to other vehicles and to local authority service so that input can be trusted.
+</span>
+
+<!--
+</li>
+
+<li> 
+<span class=j>Set メソッド</span>
+<span class=e>Set method</span>
+<ul>-->
+
+<li>
+<span class=note>2.(11)</span>
+<span class=j>ADASは安全上重要な機能を制御することがある。</span>
+<span class=e><b>Set for Critical Control</b>
+	Advanced Driver Assistance System (ADAS) Controller sets safety critical controls when driving vehicle </span>
+</li>
+
+<li>
+<span class=note>2.(16)</span>
+<span class=j><b>***</b>***</span>
+<span class=e><b>Set for HVAC</b>
+IVI system shows the status of various climate control equipments as GUI
+and lets a user control it via touch screen. (Even set API is not recommended)
+</span></li>
+
+<li>
+<span class=note>2.(17)</span>
+<span class=j><b>車外からの窓の開閉</b>
+***</span>
+<span class=e><b>Remote Window Control</b>
+	A user uses his smart devices to remotely check whether side windows of his parked car are closed or not, and to send a request to the car for closing it if opened. </span>
+</li>
+
+<li>
+<span class=note>2.(18)</span>
+<span class=j><b>車外からの空調設定</b>
+***</span>
+<span class=e><b>Remote HVAC Control</b>
+   	A user uses his smart devices to start his car remotely,
+   	and turns heaters on to warm up the car inside before getting in the car.
+</span></li>
+
+<!-- かぶってる
+<li>
+<span class=note>2.(26)</span>
+<span class=j><b>***</b>
+***</span>
+<span class=e><b>***</b>
+   	Driver would like to remotely start vehicle and turn on/set heat or air conditioner
+</span></li>
+-->
+
+<li>
+<span class=note>2.(25)</span>
+<span class=j><b>車外からのドアロック</b>
+***</span>
+<span class=e><b>Remote Door Lock</b>
+   	Driver would like to remotely lock/unlock vehicle.
+</span></li>
+
+
+<li>
+<span class=note>2.(28)</span>
+<span class=j><b>車外からのシート設定</b>
+***</span>
+<span class=e><b>Remote Sheet Configuration</b>
+ Driver would like to configure seat settings remotely.
+</span></li>
+
+<!--
+<li>
+<span class=note>2.(31)</span>
+<span class=j><b>車両データの取得</b>
+***</span>
+<span class=e><b>Get via remote server</b>
+Automaker would only like to allow API to access data from their remote servers not directly from car.
+</span></li>
+-->
+
+<li>
+<span class=note>2.(32)</span>
+<span class=j><b>車外からの設定</b>
+***</span>
+<span class=e><b>Set from Cloud Service</b>
+ Automaker only wants to allow remote settings via cloud not by direct connection.
+</span></li>
+
+<!-- シート設定 かぶり
+<li>
+<span class=note>2.(34)</span>
+<span class=j><b>****</b>
+***</span>
+<span class=e><b>****</b>
+Ted a tall driver of the family car approaches the car and the seat adjusts to his settings
+</span></li>
+-->
+
+<!-- HVAC設定 かぶり
+<li>
+<span class=note>2.(42)</span>
+<span class=j><b>HVAC設定</b>
+***</span>
+<span class=e><b>Set for HVAC</b>
+ Customer has the ability to set HVAC controls.
+</span></li>
+-->
+
+<!-- Airbag ちょっと現実味がないが、いれるなら後ろで判断
+<li>
+<span class=note>2.(43)</span>
+<span class=j><b>エアバッグ</b>
+***</span>
+<span class=e><b>Airbag</b>
+ Airbag has deployed the event is captured.
+</span></li>
+-->
+
+
+<li>
+<span class=note>2.(49)</span>
+<span class=j><b>Setの単一ソース</b>
+***</span>
+<span class=e><b>Exclusive set</b>
+ One "Set" API is only allowed to accept input from one source at one moment
+</span></li>
+
+<!--
+</ul>
+</li>
+<li>
+<span class=j>API のアクセスコントロール</span>
+<span class=e>API access control</span>
+<ul>
+-->
+
+<li>
+<span class=note>3.(03)</span>
+<span class=j><b>アプリケーション審査</b>
+***</span>
+<span class=e><b>Application Audit</b>
+ As an OEM, I don't permit any application to use Vehicle APIs without my check.</span>
+</li>
+
+<li>
+<span class=note>3.(09)</span>
+<span class=j><b>信頼できる第三者期間</b>
+***</span>
+<span class=e><b>Trusted 3rd Parties</b> 
+	Ability to query registry of trusted 3rd parties, retrieve identification mechanisms</span>
+</li>
+
+<!-- 先に書いてある
+<li>
+<span class=note>3.(17)</span>
+<span class=j><b>****</b>
+***</span>
+<span class=e><b>****</b> 
+	A user uses his smart devices to remotely check whether side windows of his parked car are closed or not, and to send a request to the car for closing it if opened.
+-->
+
+<!-- 先に書いてある
+<li>
+<span class=note>3.(18)</span>
+<span class=j><b>****</b>***</span>
+<span class=e><b>****</b> 
+A user uses his smart devices to start his car remotely, and turns heaters on to warm up the car inside before getting in the car.
+-->
+
+<li>
+<span class=note>3.(24)</span>
+<span class=j><b>運転履歴の取得</b>
+***</span>
+<span class=e><b>Drive Event Log</b>
+3rd party would like to see log of driving events
+</span></li> 
+
+<!-- 先に書いてある
+<li>
+<span class=note>3.(25)</span>
+<span class=j><b>****</b>
+***</span>
+<span class=e><b>****</b> 
+	Driver would like to remotely lock/unlock vehicle.
+</span></li>
+-->
+
+<!-- 先に書いてある
+<li>
+<span class=note>3.(26)</span>
+<span class=j><b>****</b>
+***</span>
+<span class=e><b>****</b> 
+Driver would like to remotely start vehicle and turn on/set heat or air conditioner
+</span></li>
+-->
+
+<li>
+<span class=note>3.(27)</span>
+<span class=j><b>所有者への報告</b>
+***</span>
+<span class=e><b>Report to Owner</b> 
+Vehicle owner subscribes to 3rd party monitoring of vehicle data and trouble codes to ensure vehicle is running in good health
+</span></li>
+
+<!-- 先に書いてある
+<li>
+<span class=note>3.(28)</span>
+Driver would like to configure seat settings remotely.
+</span></li>
+-->
+
+<li>
+<span class=note>3.(29)</span>
+<span class=j><b>Applicationが利用できるAPIの差</b>
+***</span>
+<span class=e><b>API Limitation***</b> 
+Automaker has access to all data elements including elements such as those relating to vehicle quality or operating data
+whereas application developer only has access to subset.
+</span></li>
+
+<!-- 先に書いてある
+<li>
+<span class=note>3.(31)</span>
+<span class=j><b>***</b>***</span>
+<span class=e><b>***</b> 
+Automaker would only like to allow API to access data from their remote servers not directly from car.
+</span></li>
+-->
+
+<!-- 先に書いてある
+<li>
+<span class=note>3.(34)</span>
+<span class=j><b>***</b>
+***</span>
+<span class=e><b>***</b> 
+Ted a tall driver of the family car approaches the car and the seat adjusts to his settings
+</span></li>
+-->
+
+<li>
+<span class=note>3.(44)</span>
+<span class=j><b>バッテリー低下の検出</b>
+***</span>
+<span class=e><b>Low Battery Event</b> 
+	Diagnostics application is monitoring battery voltage for the event where it drops below a specific voltage.
+	<!--Event monitoring.-->
+</span></li>
+
+<li>
+<span class=note>3.(45)</span>
+<span class=j><b>窓の自動開閉</b>
+***</span>
+<span class=e><b>Automated Window Operation</b> 
+Service monitors weather and checks if windows are open, they are closed.
+</span></li>
+
+<!-- 先に書いてある
+<li>
+<span class=note>3.(46)</span>
+<span class=j><b>車外からの窓の開閉</b>
+***</span>
+<span class=e><b>Remote window control</b> 
+Remotely close windows, sunroof, etc...
+</span></li>
+-->
+
+
+<!-- 先に書いてある
+<li>
+<span class=note>3.(47)</span>
+<span class=j><b>****</b>
+***</span>
+<span class=e><b>****</b> 
+Driver/Owner is alerted that parking brake is not set
+</span></li>
+-->
+
+<li>
+<span class=note>3.(51)</span>
+<span class=j><b>Logの参照権限****</b>
+***</span>
+<span class=e><b>Permission for Log History</b> 
+An application can only access the log created by itself
+</span></li>
+
+<!--
+</ul>
+</li>
+
+<li> 
+<span class=j>複数のドライバーと利用者</span>
+<span class=e>Multi drivers, Multi users</span>
+<ul>
+-->
+
+<!-- 先に書いてある
+<li>
+<span class=note>6.(34)</span>
+<span class=j><b>****</b>
+***</span>
+<span class=e><b>****</b> 
+Ted a tall driver of the family car approaches the car and the seat adjusts to his settings
+</span></li>
+-->
+
+
+<li>
+<span class=note>6.(35)</span>
+<span class=j><b>ドライバー認識</b>
+***</span>
+<span class=e><b>Identification of Driver</b>
+Current driver is identified.
+</span></li>
+
+
+<li>
+<span class=note>6.(36)</span>
+<span class=j><b>同乗者の認識</b>
+***</span>
+<span class=e><b>Identification of Passengers</b> 
+Family is travelling in vehicle and all passengers are identified.
+</span></li>
+
+
+<li>
+<span class=note>6.(38)</span>
+<span class=j><b>料金の支払い</b>***</span>
+<span class=e><b>Toll Payment</b> 
+Driving across toll bridge the responsible party is identified and payment from their account is made.  Could apply to any 3rd party vendor.
+</span></li>
+
+
+<!-- 先に書いてある
+<li>
+<span class=note>6.(50)</span>
+<span class=j><b>****</b>***</span>
+<span class=e><b>****</b> 
+During the driving, prevent other users from login and controlling the vehicle
+</span></li>
+-->
+
+
+<li>
+<span class=note>6.(56)</span>
+<span class=j><b>個人に基礎をおいたサービス</b>
+***</span>
+<span class=e><b>Personal Basis Services</b> 
+	IVI apps such as recommendation, reservation, shopping, pay-per-use  service, etc., 
+   	should operate in a personal basis, which means that apps and its API have to be changed by driver/user.
+</span></li>
+
+<!-- 先に書いてある
+<li>
+<span class=note>6.(48)</span>
+<span class=j><b>****</b>
+***</span>
+<span class=e><b>****</b> 
+Driver/Owner is alterted that  that intrusion in the vehicle
+</span></li>
+-->
+
+ <!--
+</ul>
+</li>
+
+<li>
+	<span class=j>データ所有者の権利</span>
+	<span class=e>User's right for their data</span>
+	<ul>
+-->
+	
+
+<li>
+<span class=note>6.(60)</span>
+<span class=j><b>個人情報の保護</b>
+***</span>
+<span class=e><b>Protection for Personal Data</b> 
+	E-commerce from the dashboard for drivers’ purchases of fast food,
+	gas, etc. has been available.
+	Cars become hackers' and rogue mechanics’ target for identity theft
+   	(credit card numbers, home address, e-mail information and all the other personal details).
+</span>
+
+<li>
+
+<span class=note>5.(57)</span>
+<span class=j><b>取り扱いに注意が必要な場所</b>
+***</span>
+<span class=e><b>Sensitive Location</b> 
+	Consumer has some locations he/she does not want other people to know. 
+	(Home, religious site, specialized hospital, secret 3rd place, etc.)
+</span></li>
+
+
+<li>
+<span class=note>5.(58)</span>
+<span class=j><b>ユーザーによるAPIの制御</b>
+***</span>
+<span class=e><b>API Control by User</b> 
+Consumer has less right of choice for data elements, rectification and erasure of data.
+</span></li>
 		
-		<li class=e><!--3.(03)-->As an OEM, I don't permit any application to use Vehicle APIs without my check.
-		<li class=e><!--3.(09)-->Ability to query registry of trusted 3rd parties, retrieve identification mechanisms
-		<li class=e><!--3.(17)-->A user uses his smart devices to remotely check whether side windows of his parked car are closed or not, and to send a request to the car for closing it if opened.
-		<li class=e><!--3.(18)-->A user uses his smart devices to start his car remotely, and turns heaters on to warm up the car inside before getting in the car.
-		<li class=e><!--3.(24)-->3rd party would like to see log of driving events
-		<li class=e><!--3.(25)-->Driver would like to remotely lock/unlock vehicle.
-		<li class=e><!--3.(26)-->Driver would like to remotely start vehicle and turn on/set heat or air conditioner
-		<li class=e><!--3.(27)-->Vehicle owner subscribes to 3rd party monitoring of vehicle data and trouble codes to ensure vehicle is running in good health
-		<li class=e><!--3.(28)-->Driver would like to configure seat settings remotely.
-		<li class=e><!--3.(29)-->Automaker has access to all data elements including elements such as those relating to vehicle quality or operating data whereas application developer only has access to subset.
-		<li class=e><!--3.(31)-->Automaker would only like to allow API to access data from their remote servers not directly from car.
-		<li class=e><!--3.(34)-->Ted a tall driver of the family car approaches the car and the seat adjusts to his settings
-		<li class=e><!--3.(44)-->Diagnostics application is monitoring battery voltage for the event where it drops below a specific voltage.  Event monitoring.
-		<li class=e><!--3.(45)-->Service monitors weather and checks if windows are open, they are closed.
-		<li class=e><!--3.(46)-->Remotely close windows, sunroof, etc...
-		<li class=e><!--3.(47)-->Driver/Owner is alerted that parking brake is not set
-		<li class=e><!--3.(51)-->An application can only access the log created by itself
-		</ul>
-	</li>
+<li>
+<span class=note>5.(06)</span>
+<span class=j><b>データ送出先の指定</b>
+***</span>
+<span class=e><b>Destination of Personal Data</b> 
+	I am willing to provide vehicle data for traffic monitoring, but does not want a police officer to 
+	know my destination and the exact speed of my car.
+</span></li>
 
-	<li> 
-		<span class=j>複数のドライバーと利用者</span>
-		<span class=e>Multi drivers, Multi users</span>
-		<ul>
-		<li class=e><!--6.(34)-->Ted a tall driver of the family car approaches the car and the seat adjusts to his settings
-		<li class=e><!--6.(35)-->Current driver is identified.
-		<li class=e><!--6.(36)-->Family is travelling in vehicle and all passengers are identified.
-		<li class=e><!--6.(38)-->Driving across toll bridge the responsible party is identified and payment from their account is made.  Could apply to any 3rd party vendor.
-		<li class=e><!--6.(50)-->During the driving, prevent other users from login and controlling the vehicle
-		<li class=e><!--6.(56)-->IVI apps such as recommendation, reservation, shopping, pay-per-use  service, etc.,  should operate in a personal basis, which means that apps and its API have to be changed by driver/user.
-		<li class=e><!--6.(48)-->Driver/Owner is alterted that  that intrusion in the vehicle
-		<li class=e><!--6.(50)-->During the driving, prevent other users from login and controlling the vehicle
-		<li class=e><!--6.(56)-->IVI apps such as recommendation, reservation, shopping, pay-per-use  service, etc.,  should operate in a personal basis, which means that apps and its API have to be changed by driver/user.
-		<li class=e><!--6.(60)--> E-commerce from the dashboard for drivers’ purchases of fast food, gas,etc.has been available. Cars become hackers' and rogue mechanics’ target for identity theft (credit card numbers, home address, e-mail information and all the other personal details).
-		</ul>
-	</li>
+<li>
+<span class=note>5.(08)</span>
+<span class=j><b>データ流動の調整</b>
+***</span>
+<span class=e><b>Data Granularity control</b> 
+As a user, I'd like to apply different data granularity depending on whom to send the data.
+</span></li>
 
-	<li>
-		<span class=j>データ所有者の権利</span>
-		<span class=e>User's right for their data</span>
-		<ul>
-		<li class=e><!--5.(01)-->As a user, I'd like to remove any private data from the car when I leave.
-		<li class=e><!--5.(05)-->I usually set "Do Not Track", but help me immediately after the accident.
-		<li class=e><!--5.(06)-->I am willing to provide vehicle data for traffic monitoring, but does not want a police officer to know my destination and the exact speed of my car.
-		<li class=e><!--5.(08)-->As a user, I'd like to apply different data granularity depending on whom to send the data.
-		<li class=e><!--5.(15)-->When I turn DO-NO-TRACK on, I expect any of my activities are not monitored nor recorded.
-		<li class=e><!--5.(19)-->If users agree to provide vehicle information to the weather station, many cars can be used to get weather information such as amounts of rain and ambient temperatures.
-		<li class=e><!--5.(21)-->IVI records the scene before and after an accident (for insurance or testimony)
-		<li class=e><!--5.(23)-->Driver would like to see log of ADAS/driving events
-		<li class=e><!--5.(27)-->Vehicle owner subscribes to 3rd party monitoring of vehicle data and trouble codes to ensure vehicle is running in good health
-		<li class=e><!--5.(39)-->Customer is alerted to low tire pressure, repair locations are recommended.
-		<li class=e><!--5.(40)-->Emergency responder is called to accident, vehicle reports who is in the car and can report if there are existing medical conditions
-		<li class=e><!--5.(41)-->Emergency responder is called to accident, vehicle reports where airbags are in car.
-		<li class=e><!--5.(43)-->Airbag has deployed the event is captured.
-		<li class=e><!--5.(44)-->Diagnostics application is monitoring battery voltage for the event where it drops below a specific voltage.  Event monitoring.
-		<li class=e><!--5.(55)-->Vehicle suspension sensors, front facing cameras etc can detect damage to road surface (potholes, broken manholes, broken drain covers etc) and communicate location and details of damage to other vehicles and to the local authority responsible for repairing roads. Vehicle needs to prove its identity to other vehicles and to local authority service so that input can be trusted.
-		<li class=e><!--5.(57)-->"Consumer has some locations he/she does not want other people to know.  (Home, religious site, specialized hospital, secret 3rd place, etc.)"
-		<li class=e><!--5.(58)-->Consumer has less right of choice for data elements, rectification and erasure of data.
-		<ul>
-	</li>
+<li>
+<span class=note>5.(01)</span>
+<span class=j><b>個人情報の削除</b>
+***</span>
+<span class=e><b>Removing Personal Data</b> 
+As a user, I'd like to remove any private data from the car when I leave.
+</span></li>
+
+<li>
+<span class=note>5.(15)</span>
+<span class=j><b>DNTによる追跡拒否</b>
+***</span>
+<span class=e><b>Do Not Track for Vehicle</b> 
+When I turn DO-NO-TRACK on, I expect any of my activities are not monitored nor recorded
+</li>
+
+<li>
+<span class=note>5.(05)</span>
+<span class=j><b>DNTの例外</b>
+***</span>
+<span class=e><b>Exception for Do Not Track</b> 
+I usually set "Do Not Track", but help me immediately after the accident.
+</span></li>
+
+
+<li>
+<span class=note>5.(19)</span>
+<span class=j><b>情報提供の事前合意</b>
+***</span>
+<span class=e><b>Priori agreement for data use</b> 
+	If users agree to provide vehicle information to the weather station,
+	many cars can be used to get weather information such as amounts of rain and ambient temperatures.
+</span></li>
+
+<li>
+<span class=note>5.(21)</span>
+<span class=j><b>事故のための記録</b>
+***</span>
+<span class=e><b>Record for accident</b> 
+IVI records the scene before and after an accident (for insurance or testimony)
+</span></li>
+
+<li>
+<span class=note>5.(23)</span>
+<span class=j><b>ドライバによるログの確認</b>
+***</span>
+<span class=e><b>Log Transparency</b> 
+Driver would like to see log of ADAS/driving events
+</span></li>
+
+<!-- 先に書いてある
+<li>
+<span class=note>5.(27)</span>
+<span class=j><b>**</b>
+***</span>
+<span class=e><b>**</b> 
+Vehicle owner subscribes to 3rd party monitoring of vehicle data and trouble codes to ensure vehicle is running in good health
+</span></li>
+-->
+
+<li>
+<span class=note>5.(39)</span>
+<span class=j><b>車両情報の警告</b>
+***</span>
+<span class=e><b>Alert for Car Condition</b> 
+Customer is alerted to low tire pressure, repair locations are recommended.
+</span></li>
+
+<li>
+<span class=note>5.(40)</span>
+<span class=j><b>緊急連絡</b>
+***</span>
+<span class=e><b>Emergency**</b> 
+	Emergency responder is called to accident,
+   	vehicle reports who is in the car and can report if there are existing medical conditions
+</span></li>
+
+<!-- 詳細不明瞭なため
+<li>
+<span class=note>5.(41)</span>
+<span class=j><b>**</b>
+***</span>
+<span class=e><b>**</b> 
+Emergency responder is called to accident, vehicle reports where airbags are in car.
+</span></li>
+-->
+
+<!-- 先に書いてある
+<li>
+<span class=note>5.(43)</span>
+<span class=j><b>**</b>
+***</span>
+<span class=e><b>**</b> 
+Airbag has deployed the event is captured.
+</span></li>
+-->
+
+<!-- 先に書いてある
+<li>
+<span class=note>5.(44)</span>
+<span class=j><b>**</b>
+***</span>
+<span class=e><b>**</b> 
+	Diagnostics application is monitoring battery voltage for the event where it drops below a specific voltage. 
+   	Event monitoring.
+</span></li>
+-->
+
+<!-- 先に書いてある
+<li>
+<span class=note>5.(55)</span>
+<span class=j><b>**</b>
+***</span>
+<span class=e><b>**</b> 
+Vehicle suspension sensors, front facing cameras etc can detect damage to road surface (potholes, broken manholes, broken drain covers etc) and communicate location and details of damage to other vehicles and to the local authority responsible for repairing roads. Vehicle needs to prove its identity to other vehicles and to local authority service so that input can be trusted.
+</span></li>
+-->
+
 </ol>
 
 <p class=j>
@@ -693,21 +1200,19 @@ IVI全体として解決してゆく必要があることがはっきりした�
 
 </section>
 
-<!-- ------------------------------------------------------------------------ -->
 <section><!-- modelarchitecture -->
-
 <h2>
 	<span class=j>モデルアーキテクチャ</span>
 	<span class=e>Model Architecture</span>
 </h2>
 
-<!-- 理由とGENIVI -->
+<!-- 理由と他の団体 -->
 <p class=j>
 この節ではAPIが想定する抽象的なアーキテクチャを示す。
-より詳細なモデルは例えば[[GENIVI]]や[[AGL]]が提供している。<span class=todo>どれ</span>
+より詳細なモデルは例えば[[GENIVI]]や[[AGL]]が提供している。<span class=todo>AGLの方のモデル図</span>
 <p class=e>
-This section provide a model architecture that Vehilcle APIs expect.
-The readers could refer more precise architecture of [[GENIVI]] or [[AGL]].
+This section provides a model architecture that Vehicle APIs expect.
+The readers could refer more precise architecture from [[GENIVI]] or [[AGL]].
 
 <!-- 環境とアプリケーションの制限 -->
 <p class=j>
@@ -718,10 +1223,10 @@ The readers could refer more precise architecture of [[GENIVI]] or [[AGL]].
 アプリケーションはVehicle APIsを通して車両の情報を取得する。
 アプリケーションはこれ以外の方法で車両の情報にアクセスすることはできない。
 <p class=e>
-Fig. 1 shows that IVI is located where it has access to both the Internet and CAN (car area network).
+Fig. 1 shows that an IVI is located where it has access to both the internet and CAN (car area network).
 
 Typically, a web application is downloaded from the internet and executed on the IVI.
-The application obtains car information via Vehicle APIs and it doesn't have any other way
+The application obtains car information via Vehicle APIs and it does not have any other way
 to access car information.
 
 <figure>
@@ -752,10 +1257,10 @@ TODO よそで定義されていないか
 	- 勧告としては終了している。
 -->
 <p class=e>
-An IVI have operating system and a web runtime that executes web applications.
+An IVI consists of an operating system and a web runtime that executes web applications.
 Vehicle Information Service specification requires a local server as well.
 
-Web Runtime in this document stands for a module which provides UI and sends requests to OS
+Web runtime in this document stands for a module that provides UI and sends requests to OS
 according to a given html/js/css description.
 
 <p class=j>
@@ -764,71 +1269,19 @@ according to a given html/js/css description.
 Fig. 2 shows possible application types.
 
 <dl>
-	<dt>Normal content</dt>
-	<dd>
+	<dt>Normal content</dt> <dd>
 		<span class=j> インターネット上のコンテンツがダウンロードされ、ブラウザ上で実行される形式。</span>
-		<span class=e> Browser (User agent) downloads contents from the Internet and execute them.</span>
-	<dt>Webview based</dt> <!-- TODO Web Runtime? -->
-	<dd>
+		<span class=e> Browser (User agent) downloads contents from the internet and executes them.</span>
+	</dd>
+	<dt>Webview based</dt> <!-- TODO Web runtime? --> <dd>
 		<span class=j>コンテンツがWebviewを利用する形で予めアプリケーションと一体となって配布される形式。</span>
-		<span class=e> Application contains a part of contents and a webveiw module, which execute contents.</span>
-	<dt>Native App</dt>
-		<dd>OSがサポートするネイティブのアプリとして提供される形式。
-		<dd>Application is provided in a platform native format.
+		<span class=e> Application uses webview to execute web contents, which is a part of application in most cases.</span>
+	</dd>
+	<dt>Native App</dt> <dd>
+		<span class=j>OSがサポートするネイティブのアプリとして提供される形式。</span>
+		<span class=e>Application is provided in a platform native format.</span>
+	</dd>
 </dl>
-
-
-<p class=j>
-Webviewベースのアプリケーションは、
-APIを利用するコードが予めデータとして一つのパッケージに収められている点に特色がある。
-Webviewベースの場合、マーケット（アプリケーション配布のシステム）での審査などを活用し、
-APIの悪意ある利用をある程度防ぐことができる。
-<span class=todo>コードが全てアセットとされているわけではないので修正が必要</span>
-
-<p class=e>
-Web view based application could have web content that utilize Vehicle APIs in its package as a part of asset data.
-For this type of application the market operator (i.e., application distributer)
-could review application and might reject them if they have malicious code.
-
-<!-- Service Specについて触れるのは藪蛇か。 -->
-<p class=j>
-Vehicle APIsは車の情報を提供する２つのインターフェースを提供する。
-DOM APIであるVehicle Access Interface***は
-Normal contentとWebview base形式のアプリケーションに車両情報へのアクセスを提供する。
-
-<p class=e>
-Vehicle APIs provide car information in two ways.
-
-Vehicle Access Interface**, a DOM API, provides an interface
-for Normal Content and webview based type applications.
-
-<p class=j>
-実装者がWebRuntimeだけでなく、IVIそのものも開発する場合、
-ネイティブアプリケーションにも同様の車両情報を提供したいと考えるかもしれない。
-その場合はVehicle Service Specを実装することが望ましい。
-<p class=e>
-If one is an web runtime implementer and he develops IVI as well,
-he hopes to provide car information in the same manner for all types of application.
-In this case, Vehicle Service Specification is preferable to be implemented.
-
-<!-- 下記の記述はかぶってるので整理が必要
-
-プラットフォーム固有のフォーマットを持つアプリ（ネイティブアプリ）にも同様のデータを提供したい
-という期待からVehicle Signal APIの規定が進められている。
-<p class=e>***
-
-
-<p class=j>IVIはこれまで個々のプラットフォーム上で開発されてきており、
-Vehicle APIsを取り込んだIVIはスマートフォンに見られるように、
-ネイティブアプリとWebアプリをサポートすると考えられ、
-Webアプリにもブラウザで動作するものと、Runtimeを内包した形態のものが考えられる。
-
-<p class=e>
-IVI has been developed on many platforms so far. As seen in smartphone world, 
-IVI with Vehicle APIs will support both native application and Web Application.
-There are two type of web application; one is working on a browser and another contains
-web-runtime inside of the app.
--->
 
 <figure>
 <img
@@ -841,6 +1294,59 @@ web-runtime inside of the app.
 	<span class=e> Three application types </span>
    	</figcaption>
 </figure>
+
+
+<p class=j>
+Webviewベースのアプリケーションは、
+APIを利用するコードが予めデータとして一つのパッケージに収められている点に特色がある。
+Webviewベースの場合、マーケット（アプリケーション配布のシステム）での審査などを活用し、
+APIの悪意ある利用をある程度防ぐことができる。
+<span class=todo>コードが全てアセットとされているわけではないので修正が必要</span>
+
+<p class=e>
+Webview type applications could have web contents that utilize Vehicle APIs in its package as a part of asset data.
+For this type of application, the market operator (i.e., the application distributer)
+could review application and reject them if they contain malicious codes.
+
+<!-- Service Specについて触れるのは藪蛇か。 -->
+<p class=j>
+Vehicle APIs は車の情報を提供する２つのインターフェースを提供する。
+DOM API である Vehicle Information Access API は
+Normal content と Webview base 形式のアプリケーションに車両情報へのアクセスを提供する。
+
+<p class=e>
+Vehicle APIs provide car information in two ways.
+
+Vehicle Information Access API, a DOM API, provides an interface
+for Normal Content and Webview type applications.
+
+<p class=j>
+実装者が Webruntime だけでなく、IVI そのものも開発する場合、
+ネイティブアプリケーションにも同様の車両情報を提供したいと考えるかもしれない。
+その場合はVehicle Service Specを実装することが望ましい。
+<p class=e>
+If one is web runtime implementer and develops IVI as well,
+he/she hopes to provide car information in the same manner for all types of application.
+In this case, Vehicle Service Specification is preferable to be implemented.
+
+<!-- 下記の記述はかぶってるので整理が必要
+
+プラットフォーム固有のフォーマットを持つアプリ（ネイティブアプリ）にも同様のデータを提供したい
+という期待からVehicle Signal APIの規定が進められている。
+<p class=e>***
+
+
+<p class=j>IVIはこれまで個々のプラットフォーム上で開発されてきており、
+Vehicle APIsを取り込んだIVIはスマートフォンに見られるように、
+ネイティブアプリとWebアプリをサポートすると考えられ、
+Webアプリにもブラウザで動作するものと、runtimeを内包した形態のものが考えられる。
+
+<p class=e>
+IVI has been developed on many platforms so far. As seen in smartphone world, 
+IVI with Vehicle APIs will support both native application and Web Application.
+There are two type of web application; one is working on a browser and another contains
+web-runtime inside of the app.
+-->
 
 <!--
 <p class=j>
@@ -866,18 +1372,24 @@ and there should be certain filters at each intermediate.
 Vehicle APIsを実装するユーザーエージェントはこれらも必ず実装をしなくてはならない。
 
 <p class=e>
-Followings are fundamental recommendation for considering web security, 
+Followings are fundamental W3C recommendation for considering web security.
 User-Agent which implements Vehicle APIs must implement them as well.
 
 <ul>
-	<li class=j> [[!HTTPS]] は接続先が詐称されることを防ぎ通信を暗号化する、Webセキュリティーの基本となる勧告である
-	<li class=e> [[!HTTPS]] is an essential recommendation for web security.  It prevents spoofing of destination and encrypts a communication channel.
-	<li class=j> [[!CSP]] は開発者が意図しないリソースの利用を防ぐことでXSSなどの攻撃を効果的に防ぐ勧告である。
-	<li class=e> [[!CSP]] protects service from attacks such as XSS by prohibiting unintentional access to resources.
-	<li class=j> [[!CORS]] はクロスオリジンアクセスを特定のサーバにのみ許諾することで、不特定多数からの攻撃を避けるための勧告である。
-	<li class=e> [[!CORS]] avoids illegal access by allowing cross origin access only by contents from specified servers.
-	<li class=j> [[!DNT]] はユーザーが個人の追跡を拒否することを表明するための勧告である。
-	<li class=e> [[!DNT]] is a recommendation to assert that an end-user do not wish to be tracked.
+	<li>
+		<span class=j> [[!HTTPS]] は接続先が詐称されることを防ぎ通信を暗号化する、Webセキュリティーの基本となる勧告である</span>
+		<span class=e> [[!HTTPS]] is an essential recommendation for web security.
+		   	It prevents spoofing of the destination and encrypts the communication channel.</span>
+	</li><li>
+		<span class=j> [[!CSP]] は開発者が意図しないリソースの利用を防ぐことでXSSなどの攻撃を効果的に防ぐ勧告である。</span>
+		<span class=e> [[!CSP]] protects service from attacks such as XSS by prohibiting unintentional access to resources.</span>
+	</li><li>
+		<span class=j> [[!CORS]] はクロスオリジンアクセスを特定のサーバにのみ許諾することで、不特定多数からの攻撃を避けるための勧告である。</span>
+		<span class=e> [[!CORS]] avoids illegal access by allowing cross origin access only from contents of specified servers.</span>
+	</li><li>
+		<span class=j> [[!DNT]] はユーザーが個人の追跡を拒否することを表明するための勧告である。</span>
+		<span class=e> [[!DNT]] is a recommendation to assert that an end-user do not wish to be tracked.</span>
+	</li>
 	<!--
 	<a href="#biblio-mixed">[MIX]</a>
 	<a href="#biblio-rfc2119">[RFC2119]</a>
@@ -889,30 +1401,30 @@ User-Agent which implements Vehicle APIs must implement them as well.
 悪意のあるコードがIVIにもたらされないよう留意する。
 そのような技術には下記のものがある。
 <p class=e>
-Service provider should utilize above recommendation efficiently and incorporate general techniques
+Service provider should utilize above recommendations efficiently and incorporate general techniques
 of web security so that malicious code cannot be executed in IVI.
-Following techniques are such examples.
+Example techniques are as follows.
 
 <ul>
 	<li>
-	<span class=e>パスワード等による認証</span>
-	<span class=j>User authentication by password/biometrics. <!-- FIDO --></span>
+	<span class=j>パスワード等による認証</span>
+	<span class=e>User authentication by password/biometrics. <!-- FIDO --></span>
 	</li>
 	<li>
-	<span class=e>適切な有効期間を設定したトークンの利用</span>
-	<span class=j>Access token with appropriate time period.</span>
+	<span class=j>適切な有効期間を設定したトークンの利用</span>
+	<span class=e>Access token with appropriate time period.</span>
 	</li>
 	<li>
-	<span class=e>サーバに対する異常なアクセスの検知(SIEM, Security information and event mangaing)</span>
-	<span class=j>Detection of abnormal access to the server (SIEM, Security information and event managing)</span>
+	<span class=j>サーバに対する異常なアクセスの検知(SIEM, Security information and event managing)</span>
+	<span class=e>Detection of abnormal access to the server (SIEM, Security information and event managing)</span>
 	</li>
 	<li>
-	<span class=e>ユーザーの入力値や外部から取得したデータのサニタイズ</span>
-	<span class=j>Sanitize for data that is obtained from user's imput or outside of system</span>
+	<span class=j>ユーザーの入力値や外部から取得したデータのサニタイズ</span>
+	<span class=e>Sanitization for data that is obtained from user's input or outside of system</span>
 	</li>
 	<li>
-	<span class=e>CORS関連ヘッダの付与</span>
-	<span class=j>Putting CORS header on HTTP Response</span>
+	<span class=j>CORS関連ヘッダの付与<span class=todo>メカニズム確認</span></span>
+	<span class=e>Putting CORS header on HTTP response.</span>
 	</li>
 </ul>
 
@@ -926,21 +1438,22 @@ Following techniques are such examples.
 	<span class=e>Requirements and Strategies</span>
 </h2>
 
+<span class=todo> ***** </span>
+
 <section><!-- systemanddatahelth -->
 <h3>
 	<span class=j>システムとデータの健全性確保</span>
-	<span class=e>System and Data helth</span>
+	<span class=e>System and Data health</span>
 </h3>
 
 <!-- トラストチェーン -->
 <p class=j>
 前章で標準的なWebのセキュリティー技術を概観したが、その正しさはベースとなるプラットフォームに依存する。
 この章ではWebランタイムの周辺に目を向け、必要なセキュリティー対策について検討する。
-<span class=todo>不十分</span>
 
 <p class=e>
-The previous section introduce basic technologies for web security. The integrity relies on its platform.
-This section focus on the environment where WebRuntimes runs and discuss its security requirements.
+The previous section introduced basic technologies for web security. The integrity relies on its platform.
+This section focuses on the environment where web runtime runs and discusses its security requirements.
 
 <!-- 脅威の概観とアップデート -->
 <p class=j>
@@ -948,9 +1461,9 @@ This section focus on the environment where WebRuntimes runs and discuss its sec
 PCと同等の脅威が存在する。
 これらの脅威に対しては事前の対策とアップデートが重要である。
 <p class=e>
-IVI is connected to networks so there is the same kind of threat that could be found on PCs
-such as unauthorized access or Mal ware intrusion.
-To protect system from these threat, proactive protection and system update are important.****
+IVI is connected to networks so there is the same kind of threats that could be found on PCs
+such as unauthorized accesses or malware intrusions.
+To protect system from these threats, proactive protection and system update are important.
 
 <!-- セグメンテーション -->
 <p class=j>
@@ -967,7 +1480,7 @@ As for the proactive protection,
 IVI system should be designed as a set of independent segments
 to prohibit unnecessary accesses in both of physical and logical ways.
 
-Vehicle Information Service spec has a model architecture where a request is passed from
+Vehicle Information Service Specification has a model architecture where a request is passed from
 application to car through several modules.
 These multi step architecture makes harder that a code behaves maliciously.
 
@@ -977,18 +1490,18 @@ These multi step architecture makes harder that a code behaves maliciously.
 セキュリティーホールが見つかった際に速やかなアップデートを行うべきである。
 
 [[CVE]]
-は幅広くWebRuntimeあるいはOSに脆弱性を報告している。
+は幅広くWebruntimeあるいはOSに脆弱性を報告している。
 IVIの開発者はそれらの情報をもとに、 OSを含めたアップデート方法を予め検討しておくべきである。
 脆弱性の深刻度を定量化するには
 [[CVSS]]
 を利用してもよい。
 
 <p class=e>
-System update is critically important to keep sytem soundness.
+System update is critically important to keep system soundness.
 Once a security hole is reported, system must be updated as soon as possible.
 
 [[CVE]]
-continuously announces vulnerabilities of various OS and web-runtime.
+continuously announces vulnerabilities of various OS and web runtime.
 In several layer such as web-runtime, libraries or OS, IVI should be designed to be promptly updatable.
 [[CVSS]]
 could be a help to quantify vulnerability impact.
@@ -997,14 +1510,14 @@ could be a help to quantify vulnerability impact.
 <p class=j>
 ファームウェア・ソフトウェアのアップデートはシステムの健全性を維持する上で不可欠であるが、
 アップデート機構そのものが脆弱性となるケースもしばしば見られる。
-[[ISOx.itsec-1]]は特に車載ソフトウェアのアップデートに関してプロトコルを規定しており、
+ISOは特に車載ソフトウェアのアップデートに関してプロトコルを規定しており、
 これを参照して定期的なアップデートを行うべきである。
 <!-- TODO: つかえるのか -->
 
 <p class=e>
-Periodic system update is necessary for car soundness<span class=todo>***</span>
+Periodic software update is necessary for system soundness
 but the process is often attacked and the vulnerabilities have been exposed.
-[[ISOx.itsec-1]] defines an update protocol for software that works on car.
+ISO will define an update protocol for software that works on car soon.
 The protocol could be utilized for system on IVI as well.
 
 <!-- ハードウェア -->
@@ -1014,9 +1527,9 @@ The protocol could be utilized for system on IVI as well.
 [TPM]]はプログラムの署名を改竄が困難な形で実現するもので、
 システムの健全性をチェックするために利用することができる。
 <p class=e>
-Finally, dedicated security hardware could support to check system soundness<span class=todo>***</span>.
-For instance [[TPM]] realize highly anti-tampered electric sign and improve
-integrity of report that a car might send to a cloud server.
+Finally, dedicated security hardware could support to check system soundness
+For instance, [[TPM]] realizes highly anti-tampered electric sign and improves
+integrity of report that a car would send to a cloud server.
 
 <section> <!-- protectionagainstintrusionandattack -->
 <h4> 
@@ -1031,9 +1544,9 @@ Webアプリケーションは、ローカルのファイルにアクセス出�
 一方でWeb runtime自体が大きく複雑なため、API実装やプラグイン・モジュールにメモリ破壊などの問題が
 しばしばあり、それらの脆弱性をついたウイルス感染などがあった。<!-- TODO 本当か -->
 <p class=e>
-The capability of web application is restricted; for instance it doesn't have access to local files.
-It is difficult to let an application attack system compared to native application,
-On the other hand, Web Runtime is a huge and complicated software and
+Generally, the capability of web application is restricted; for instance it does not have access to local files.
+It is difficult to let a web application attack system compared to native application.
+On the other hand, web runtime itself is a huge and complicated software and
 it has had vulnerabilities such as implementation bugs or memory corruption on its plug-in.
 
 
@@ -1045,9 +1558,9 @@ it has had vulnerabilities such as implementation bugs or memory corruption on i
 例えば[[!SafeBrowsing]]はブラックリスト方式で
 マルウェアを配布したり、フィッシング目的のサイトのURLへアクセスを試みると警告を出す。
 <p class=e>
-To prevent downloading a malicious application, web runtime could filter URL from where code is provided.
-For instance [[SafeBrowsing]] provide a blacklist filter that covers hosts which distributes malwares
-or phishing.
+To prevent downloading a malicious application, system could filter URL from where code is provided.
+For instance, [[SafeBrowsing]] provide a blacklist filter that covers hosts which distributes malwares
+or which is suspected as a phishing site.
 
 <!-- ローカルProxy -->
 <p class=j>
@@ -1056,7 +1569,7 @@ URLをフィルタするだけでなく、問題のあるコードを除去す�
 Proxyサーバを利用することのメリットはWebランタイムには変更を加える必要がない点である。
 
 <p class=e>
-Additionally if removing malicious code is preferable, a local proxy server
+Additionally, if removing malicious code is preferable, a local proxy server
 could be used for such sanitizing task.
 Proxy server approach does not need to change web runtime and it can be independently provided.
 
@@ -1069,11 +1582,11 @@ Proxy server approach does not need to change web runtime and it can be independ
 クラウドサーバーへの不正なログインなどが行われている。
 IVIのセキュリティはそれらへの依存が少ない形で構成されることが必要である。
 <p class=e>
-There has been several security research that successfully attack car system remotely.
-In these study, vulnerabilities of modules around IVI are first step of the attacks.
+There has been several security research that successfully attack car system from remote.
+In these study, vulnerabilities of modules around IVI became first step of the attacks.
 These modules include wireless access points equipped on car,
-faked cellular station and cloud servers which authentication have a problem.
-IVI security should be designed with less dependency on these modules.
+faked cellular station and cloud servers that authentication have a problem.
+IVI security should be designed to have less dependency on these modules.
 <!-- 不正アクセスへの対処 -->
 <p class=j>
 不正アクセスに対する防衛策としては不必要にサービスを開示しないことが基本である。
@@ -1081,8 +1594,8 @@ IVI security should be designed with less dependency on these modules.
 IVIの外からのアクセスを想定しないのであれば、受け付けるリクエストをIVI内部からのものに
 限定すべきである。
 <p class=e>
-To prevent unauthorized access system should not expose its service if it is unnecessary.
-For instance, Vehicle Service information Specification behaves as a local web server
+To prevent unauthorized access, system should not expose its service if it is unnecessary.
+For instance, Vehicle Service Information Specification behaves as a local web server
 but only clients on the same machine need to have access to the server.
 So the firewall on IVI should reject packets that comes from outside.
 
@@ -1090,31 +1603,34 @@ So the firewall on IVI should reject packets that comes from outside.
 <p class=j>
 Vehicle Service Information Specification の場合は、Webサーバに適用されるセキュリティー対策を
 利用すべきである。アクセストークンの利用などがその一例であり、詳細は同Specのセキュリティー Consideration
-を参照のこと。
+を参照のこと。<span class=todo>上とまとめるか</span>
 <p class=e>
 In the case of Vehicle Service Information Specification,
-Technologies of server side technologies should be applied to its implementation.
+technologies of server side technologies should be applied to its implementation.
 The specification describes details.
 
 <!-- 内部に侵入した場合 -->
 <p class=j>
 フィルタを通過し、不正なコードが内部に混入した場合に備え、IVIは下記の機能を持つことを検討すべきである。
-<p class=e>In a case that a malicious code come into inside of IVI by passing those filters,
+<p class=e>In case that a malicious code comes into inside of IVI by passing those filters,
 IVI should be considered to have following architecture/functionality.
 
 <ul>
 	<li>
 	<span class=j>	セグメンテーション：ランタイムがVehicle APIsを実行する場合に、そのリクエストが、
-		アプリケーションのパーミッション、APIの実行時パーミッション、など複数の段階でチェックを受けるように構成する</span>
-	<span class=e> Segmentation: separates modules and enforces several checks before executing requests from web contents
-		by web-runtime. For instance, installation-time permission check and run-time permission check***</span>
+		アプリケーションのパーミッション、APIの実行時パーミッション、など複数の段階でチェックを受けるように構成する
+		<span class=todo>実現性がどうか</span></span>
+	<span class=e>Segmentation design: separates modules and enables several checks before executing requests
+	   	from web contents.</span>
 	</li>
 	<li>
 	<span class=j>マルウェア、エクスプロイト検知とアプリケーションの停止： 異常な動作、要求を行うアプリケーションを停止する。
 		ルートを取得された端末は安全とはみなせないため、動作を停止する。</span>
 	<!-- TODO ルートは別の場所が良いか。説明も不足 -->
 	<span class=e>Malware/exploit detection and termination of application: terminates application that behaves suspiciously
-		or that sends abnormal requests. Rootized devices cannot seems to be secured so system should terminate itself.**</span>
+		or that sends abnormal requests.
+		Rootized devices does not seem to be secured so an application that requires high security should stop under this condition.
+		</span>
 	</li>
 </ul>
 
@@ -1191,7 +1707,7 @@ IVI should be considered to have following architecture/functionality.
 
 <section> <!-- secConnection -->
 <h4>
-	<span class=j>データの正真性</span>
+	<span class=j>データの完全性</span>
 	<span class=e>Data Integrity</span>
 </h4>
 
@@ -1202,10 +1718,10 @@ IVI should be considered to have following architecture/functionality.
 あるいは、車から得られる情報が道路の混雑状況などの公共目的に利用されるようになった場合、
 いたずら目的のデータがアップロードされる可能性もある。
 <p class=e>
-Information from car has possibility to generate monetary value for instance if it is referred for insurance.
-Protection against outside is not enough for this case because the end user has incentive to falsify the data.
+Information from car has possibility to generate monetary value, e.g., if it is referred for insurance.
 Or, if the information is used for public purposes, such as traffic jam analysis, 
 some user might upload faked data for mischief.
+Outside protection does not work for these cases because the end user has incentive to falsify the data.
 
 <p class=j>
 こういった偽装行為を行うためにはIVIに自由にアクセスできる必要がある。
@@ -1223,21 +1739,21 @@ Vehicle APIsはプラットフォームが提供するデータが偽装され�
 <p class=e>
 Vehicle APIs currently have no solution for the case that data from platform is faked.
 This issues will be focused in the future by having consistency with other W3C recommendations.
-Service providers should take it into consideration and decide how to treat obtained data.
+Service providers should take this fact into consideration and decides how to treat obtained data.
 </section> <!-- endof secConnection -->
 </section>
 
 <section> <!-- accesscontroll -->
 <h3>
-	<span class=j>アクセスコントロール</span>
-	<span class=e>Acceess control</span>
+	<span class=j>APIの可用性</span>
+	<span class=e>API Availability</span>
 </h3>
 
 <!-- 章の説明 -->
 <p class=j>
-この章ではAPI提供側の視点に立って、APIの利用をコントロールする手段を検討する
+この章ではAPIの利用をコントロールする手段を検討する
 <p class=e>
-This section, from the point of API provider, discusses the ways to control API access by developers.
+This section discusses the ways to control API access by developers.
 
 <!-- 伝統的なアクセスコントロール -->
 <p class=j>
@@ -1247,11 +1763,11 @@ This section, from the point of API provider, discusses the ways to control API 
 この様な無制限のAPI利用は利用者に不便をもたらしたり、プライバシー上の懸念があったりすることなどを理由に
 GPS情報の取得など一部のAPIはユーザーのパーミッションを設けられている。
 <p class=e>
-An implementer provides a DOM API and developers utilize them.
-In most cases, there is no limitation for use of APIs, so developers freely use
+Normally, implementers provide a DOM API and developers utilize it.
+There is no limitation for use of the API, so developers freely have access to
 current time, position of mouse pointer, page scroll etc.
 This unlimited API use can cause user inconvenience or privacy risk, 
-so some API puts such as GPS*** <span class=todo>正規式な名前</span>, set permissions.
+so some API such as Geo-location API requires user's permissions.
 
 <!-- 不正とみなせるアクセス -->
 <p class=j>この他、近年のブラウザでは頻発するポップアップ表示などが検知された際に、
@@ -1260,7 +1776,7 @@ so some API puts such as GPS*** <span class=todo>正規式な名前</span>, set 
 いずれにせよこれらを検知してユーザーに確認するか、自動的に停止することが望ましい。
 <p class=e>
 Some browser detects abnormal call of API, such as alert popup, and ask user whether to stop subsequent requests.
-Frequent API is suspected as behavior of a malicious code or just a bug.
+Frequent API is suspected as behavior of a malicious code or a simple bug.
 In both case, API implementation should ask user whether continue or stop the call automatically.
 
 <!-- 限界
@@ -1271,7 +1787,6 @@ In both case, API implementation should ask user whether continue or stop the ca
 	<p class=e> ****
 -->
 
-<!-- ----------------------------------------------------------------------- -->
 <section> <!-- setmethod -->
 <h3>
 	<span class=j>Set メソッド</span>
@@ -1284,9 +1799,9 @@ Vehicle Data Specificationは多数のデータポイントを定義し、
 Vehicle Information Access APIは各データポイントに対し値を変更するset, 現在値を取得するget,
 及び値を継続的に取得するsubscribeメソッドを定義している。
 <p class=e>
-Vehiclde Data Specification defines a lot of datapoints and
-Vehicle Information Access API provide 'set' to modfiy the data, 'get' to obtain current value and
-'subscribe' for coninuous report.
+Vehicle Data Specification defines a lot of datapoints and
+Vehicle Information Access API provide 'set' to modify the data, 'get' to obtain current value and
+'subscribe' for continuous report.
 
 
 <!-- 変更set/get/subscribeの紹介 -->
@@ -1295,17 +1810,17 @@ Vehicle Information Access API provide 'set' to modfiy the data, 'get' to obtain
 エンジンスピード(EnglineSpeed)や走行距離(distanceSinceTotal)など
 安全上、あるいはメンテナンス上変更すべきでないものも存在する。
 これらに対するSetの呼び出しはinvalid_operationとして処理されるべきである。
-<p class=e>For some data point, 'set' is meaningless. for instance, fuel type or gyro
+<p class=e>For some data point, 'set' is meaningless. For instance, fuel type or gyro
 could no be changed in nature.
-There is another type of datapoints where the value should not be modifieable because of safty or maintainounce purpose.
-Engine speed and Distance-since-total<spab class=todo>check</span> is categorized as this type.
-'Set' request for these types of datapoint should be failed with 'invalid_operation' error.
+There is another type of datapoints where the value should not be modifiable because of safety or maintain purpose.
+Engine speed and Distance-since-total <span class=todo>check</span> is categorized as this type.
+'Set' request for these types of datapoints should be failed with 'invalid_operation' error.
 
 <!-- 注意事項の導入 -->
 <p class=j>Setインターフェースは空調など、いわゆるHVACへの利用を想定して提供されている。
 実装者は安全性を検討した上で、これらへのアクセスをinvalid_operationとすることもできる。
-<p class=e>'Set' interfaces is provided for HVAC such as airconditoners.
-With having safty consideration, implementer may or may not implement 'set' for HVAC.
+<p class=e>'Set' interfaces is expected to be used for non critical datapoint such as HVAC system.
+With having safety consideration, implementer may or may not implement 'set' for HVAC.
 
 <figure>
 <!-- <img
@@ -1313,7 +1828,10 @@ With having safty consideration, implementer may or may not implement 'set' for 
 	width=50%	
 	alt"normal content, webview based, Native app"></img>
 	-->
-	isSettablle -&gt; isHVAC -&gt; isSafe -&gt; OK
+	isSettablle?</br>
+	Yes	-&gt; isHVAC?</br>
+	Yes	-&gt; isSafe?</br>
+    Yes	-&gt; implement
 	<br>
 	<figcaption>
 	<span class=j> setメソッドの提供判定 </span>
@@ -1326,16 +1844,15 @@ With having safty consideration, implementer may or may not implement 'set' for 
 <p class=j>
 setをサポートする場合、リソース競合を起こさないよう慎重な設計が求められる。
 
-例えばVehilcle APIを利用するアプリケーションA, Bが同時に動作する場合を考える。
+例えば Vehicle APIを利用するアプリケーションA, Bが同時に動作する場合を考える。
 アプリAが温度をあげようとし、アプリBが温度を下げようとすると矛盾が生じる。
 また、アプリAが雨を検知し窓とサンルーフを閉じようとした場合に、
 アプリBが窓の操作をロックしていると、一貫性のある動作を提供できなくなる。
 <p class=e>
-'Set' implementation need resource lock mechanism not to cause resource race condition.
-Contradiction will happens, for instance,  
-two applications A, B works similtaniousely**, and app A tries to heat up while B tries to cool down.
-Or imange, Application A sensed rain and tries to close window and sunroof. In this case app A should be given both of controll or shodld be non of them.
-Otherwise the consequent result will be unexpected one.
+'Set' implementation needs resource lock mechanism not to cause race condition.
+Image that two applications A, B work at a time, and app A tries to heat up while B tries to cool down.
+Or imagine, application A sensed rain and tries to close window and sunroof. App A should be given both of
+control or should be none of them, otherwise the consequent result will be unexpected one.
 
 <!-- 旧
 
@@ -1356,9 +1873,9 @@ Or a content may set only one data-point even when the content need to change mo
 
 
 <p class=j>
-Vehicle APIsを含むW3C規格は、双方のモデルに含まれるWebContentとRuntimeの関係を重視し、
-正しいコンテンツがRuntimeの機能を正しく利用できることを要請する。
-IVIの安全性を考える場合は、RuntimeとOSとの関係がより重視される必要がある。
+Vehicle APIsを含むW3C規格は、双方のモデルに含まれるWebContentとruntimeの関係を重視し、
+正しいコンテンツがruntimeの機能を正しく利用できることを要請する。
+IVIの安全性を考える場合は、runtimeとOSとの関係がより重視される必要がある。
 その際の観点は下記の通りである。
 
 <p class=e>
@@ -1401,34 +1918,33 @@ Or a content may set only one data-point even when the content need to change mo
 
 <section>
 <h3> <!-- sec 6 -->
-	<span class=j>ベストプラクティス</span>
-	<span class=e>Best Practice</span>
+	<span class=j>アクセスコントロールのベストプラクティス</span>
+	<span class=e>Best Practice for Access Control</span>
 	</h3>
 
 <p class=j>
 WebAPIの利用はオリジン単位で管理され、ユーザーの意思に基づき許諾されてきた。
 API実装者はその考え方にしたがって、Vehicle APIsの利用に際してユーザーに何らかの選択肢を与えるべきである。
 <p class=e>
-To access to some kind of Web API, each [[!ORIGIN]] need permission which is granted by User Agent
+To access to some kind of web API, each [[!ORIGIN]] need permission which is granted by User Agent
 on behalf of end user.
-Implementer should keep this manner and provide option that end-user can present their preference.
-<!-- TODO 意図が不明瞭 -->
+Implementer should keep this manner for Vehicle APIs as well and provide option that end-user can present their preference.
 
 <p class=j>
-Vehilcle APIは詳細なインターフェースを提供するため、実装者の視点で開示が望ましくないものも含まれる。
+Vehicle APIは詳細なインターフェースを提供するため、実装者の視点で開示が望ましくないものも含まれる。
 そのようなデータポイントについては、APIの定義にそって提供を行わないこともできる。
 更に進んで、ユーザーを保護するという観点から、特定の組織や、許諾を与えたコンテンツにのみAPIの利用を
 認めたい場合が考えられる。そのためのいくつかの選択肢を示す。
 <p class=e>
 Vehicle APIs defines interfaces for details data and some of them could be not preferable to be public
-from the perspective of implementers. Spec allows implementer not to expose these data-points.
+from the perspective of implementers. Specification allows implementer not to expose these data-points.
 
-Moreover, an implementer may considers users benefit and would like to expose some of data-points
-only to certain organizations or authorized contents. Here are some best practice to realize such access control.
+Moreover, an implementer may consider user's benefit and would like to expose some of data-points
+only to certain 3rd parties or authorized contents. Here is some best practice to realize such access control.
 <!-- TODO 意図が不明瞭 -->
 
 <ol>
-	<li class=j> Runtimeは実行中のWebContentsのオリジンを知ることができる。Vehicle APIsにアクセスが試みられた際、内部に持つホワイトリスト
+	<li class=j> runtimeは実行中のWebContentsのオリジンを知ることができる。Vehicle APIsにアクセスが試みられた際、内部に持つホワイトリスト
 	と突合し、予め認められたオリジンにのみAPIの利用を許可することができる。
 	<li class=e> Web-runtime is able to recognize the origin of executing web contents.
 	So it could allow the origin to access the API only if the origin is listed in a predefined white list.
@@ -1504,8 +2020,8 @@ Followings should be proceeded and information has to be treated in complying wi
 この許諾結果は保存してもよいが、ユーザーが希望するときには不許諾に変更するユーザーインターフェースを
 持たなくてはならない。
 <p class=e>
-User agent should ask user his/her permission if an ppplication tries to user Access Information API.
-This permission could be stored for future use. User agent should provide  UI to chagen permission for ehach cite.****
+User agent should ask user his/her permission if an application tries to user Access Information API.
+This permission could be stored for future use. User agent should provide  UI to change permission for each site.
 
 <!--
 
@@ -1568,7 +2084,7 @@ HTTP ヘッダについての勧告であり、広くサポートされている
 The Do Not Track ([[!DNT]]) is the proposed HTTP header field that requests
 that a web application disable either its tracking or cross-site user tracking of an individual user. 
 
-In view of peculiarity of Automobile, in the event of emergencies to protect the vital interests
+In view of peculiarity of automobile, in the event of emergencies to protect the vital interests
 and property (vehicle) of an individual, temporal deactivation of DNT function may be required.
 
 <p class=j>
@@ -1578,9 +2094,9 @@ DNTを含め、緊急時におけるプライバシーの保護の例外は、�
 サービス提供者は緊急時のデーターの取り扱いについて明示的にユーザーの許諾を得ておくべきである。
 <p class=e>
 Including DNT, exceptions for privacy protection is not implicitly allowed.
-A questioners perfomrmed by taskforce shows that there are not-less*** number of peeople doesn't want to
+A questioners performed by the task force shows that there are non-negligible number of people does not want to
 provide their privacy even if they are in an emergent situation.
-Service provider should have explicit agreemnet for use of private data.
+Service provider should have explicit agreement for use of private data.
 
 <!--
 <p>
@@ -1617,24 +2133,35 @@ API実装者はエンドユーザーの意思を反映するため、Access Cont
 	<span class=e>Multi drivers/users</span>
 </h4>
 
+<!--
+<p class=j>
+一つの車両は複数のドライバーに利用され、一人のドライバーは複数の車両を利用すると考えられる。
+サービス提供者は、そのような状況を踏まえ、ある人のデータやプリファレンスが
+別のユーザーから閲覧できないようにする必要がある。
+<p class=e>
+An individual may drive a car owned by others. An individual may drive multiple cars.
+Service provider take this situation into consider and should manage one's preference so that
+others cannot see the preference.
+-->
+
 <!-- 複数ドライバーのプライバシー -->
 <p class=j> 一台の車には複数の運転者が想定される。それらの運転手は家族であるかもしれないし、職務上の同僚かもしれない。
 IVIは、個人向けに設定される情報がある場合には、それら複数の運転者それぞれのプライバシーが守られるよう配慮すべきである。
 個人毎に切り替えられるべき情報の例を以下に示す。
 <p class=e>
-A driver would have multi cars and a car would have multi drivers. For the latter** case, the drivers could be family
-or could be collogues. IVI, therefore, should keep their privaate data in secret not ot be seen from other frivers if IVI
-treat users preferences. Personal infomation includes followings:
+A driver would have multi cars and a car would have multi drivers. For the latter case, the drivers could be family
+or could be collogues. IVI, therefore, should keep their private data in secret not to be seen from other drivers if IVI
+treat users preferences. Personal information includes followings:
 
 <ol>
 	<li>
 		<span class=j>フォームに入力したパスワード、索語等のデータ</span>
-		<span class=e>Password inputed on form, searched words</span>
+		<span class=e>Password or serched word inputted on form</span>
 	</li> 
 
 	<li>
 		<span class=j>クレジットカード等の金銭的なデータ</span>
-		<span class=e>Payment data such as credit card numner</span>
+		<span class=e>Payment data such as credit card number</span>
 	</li> 
 
 	<li>
@@ -1644,7 +2171,7 @@ treat users preferences. Personal infomation includes followings:
 
 	<li>
 		<span class=j>Cookie, IndexDBなどのサイトデータ</span>
-		<span class=e>Site data, such as Cookiees, Indexed DB</span>
+		<span class=e>Site data, such as Cookies, Indexed DB</span>
 	</li> 
 </ol>
 
@@ -1655,7 +2182,7 @@ treat users preferences. Personal infomation includes followings:
 利用者の意図を確認するようなUIを提供すべきである。
 <p class=e>
 User would use a service in deferent situation.
-Approppreate contents for dring with family would be defferent from moving with collegue.
+Appropriate contents for driving with family would be different from moving with collogues.
 Service provider should consider this possibility and should provide a UI to ask
 his/her intention whether their data can be shown on IVI.
 
@@ -1664,19 +2191,19 @@ his/her intention whether their data can be shown on IVI.
 このようなケースではIVIの管理者権限は所有者に与えられ、運転者が操作できるべきではない。
 所有者にのみ認められるべき権限の例を以下に示す。
 <p class=e>
-Driver might be different from car owner. The car could belongs to a campany or could be  a shared car.
-In this case administrative operation should be permitted for owner and drivers should be kept away from the operation.
-Here are *** which should be allowed only for owners.
+Driver might be different from car owner. The car could belong to a company or could be  a shared car.
+In this case administrative operation should be permitted to owner and drivers should be kept away from the operation.
+Here is faculties which should be allowed only for owners.
 
 <ol>
 	<li>
 		<span class=j>ユーザーの追加と削除</span>
-		<span class=e>Adding user, deleateing user</span>
+		<span class=e>Adding user, deleting user</span>
 	</li> 
 
 	<li>
 		<span class=j>アプリケーションの追加と削除</span>
-		<span class=e>adding application, deleateaing application</span>
+		<span class=e>adding application, deleting application</span>
 		</li> 
 </ol>
 
@@ -1684,16 +2211,16 @@ Here are *** which should be allowed only for owners.
 <p class=j>原則としてドライバーのプライバシーに関わる情報は、所有者であっても許可無く開示されるべきではない。
 ユーザーの利便性を考慮して開示を行う場合には、IVIはドライバーが情報を入力する際にその旨を通告すべきである。
 <p class=e>
-Basically***, even the ownwer should not be able to see other driver's privacy data without their permission***.
-If IVI expose thase data, for the purpose of user's benefit, IVI should prioriy*** ask user about it.
+In principle, even the owner should not be able to see other driver's privacy data without their permission***.
+If an IVI exposes these data for the purpose of user's benefit, the IVI should ask user about it in advance.
 
 <!-- ユーザー毎の処理の切り替え -->
 <p class=j>上記を実現するためにはIVIがユーザー認証とログイン処理を行う必要がある。
 OSレベルで対応することが自然であるが、Webランタイムが対応しても差し支えない。
-<p class=e>To realize avobe user switchig, IVI must have user authentiaction and loging.
-It is natural that operating system provide this functionality. Web Runtime also could
-be the provider. In any implementation, The user switch should be transparency from applicaiont.
-<span class=todo>** 言い過ぎ?</span>
+<p class=e>To realize above user switching, IVI must implement user authentication and login.
+It is natural that operating system provide this functionality but web runtime also could
+be the provider. In any implementation, the user switching should be transparent from application.
+<span class=todo>too much?</span>
 
 <!-- FIDOと利便性 -->
 <p class=j>
@@ -1702,23 +2229,13 @@ be the provider. In any implementation, The user switch should be transparency f
 [[!FIDO]]
 のような方法で安全性と利便性の両立をはかるべきだろう。
 <p class=e>
-On the other hand, sevice provider should take into consider that an IVI will be sahred with multi user.
-For the purpose of user authentication "account and password" have been used but that is not user friendly.
+On the other hand, service provider should take into consider that an IVI will be shared with multi user.
+For the purpose of user authentication "account and password" have been used but that is not friendly for drivers.
 [[!FIDO]]
-allows service provider to incortporate***? secureness with easiness***.
+allows service provider to incorporate secureness and convenience.
 
 
 <!-- 以下古い部分 -->
-
-<p class=j>
-一つの車両は複数のドライバーに利用され、一人のドライバーは複数の車両を利用すると考えられる。
-サービス提供者は、そのような状況を踏まえ、ある人のデータやプリファレンスが
-別のユーザーから閲覧できないようにする必要がある。
-
-<p class=e>
-An individual may drive a car owned by others. An individual may drive multiple cars.
-Service provider take this situation into consider and should manage one's preference so that
-others cannot see the preference.
 
 <!-- 主語が問題ある。
 <p class=j>
@@ -1739,23 +2256,24 @@ IVI implementer should have designe whare user agent can
 <section>
 <h2>
 	<span class=j>関連する勧告候補</span>
-	<span class=j>Related work</span>
+	<span class=e>Related work</span>
 </h2>
 
-<p class=j>本項で触れた幾つかの問題はWeb技術とデバイスの制御、セキュリティーの3つが関連する課題であり、
+<p class=j>Usecaseにあり、5章にない幾つかの課題は
 Vehicle APIsの新しいバージョンあるいは、下記のグループ等とのより一般的なSpecによって規定される可能性がある。
-<p class=e>Ansolved issuses we touched on this document requires web tehcniques and device controll and security 
-and next specification or other speficication will solve with collaborative worl with following groups.
+<p class=e>Unsolved issues that is listed at section 2 and not treated at section 5 
+would be focused by next Vehicle APIs, or by other new specification
+under collaborative work with following groups.
 
 <ul>
 	<li><span class=j>認証Payment WG</span>
-	<span class=e>Authenitcation ... Payment Workign Group</span>
-	<li><span class=e>データのIntegrity Hardware community group</span>
-	<span class=e>Data Integrity Hardware community Group</span>
-	<li><span class=j>センサーへのAPI generic sensor api</span>
-	<span class=e>Sensor API Generic Sensor APIs</span>
+	<span class=e>Authentication: Payment Working Group</span>
+	<li><span class=j>データの Integrity Hardware community group</span>
+	<span class=e>Data Integrity: Hardware Community Group</span>
+	<li><span class=j>センサーへの API generic sensor API</span>
+	<span class=e>Sensor API format: Generic Sensor APIs</span>
 	<li><span class=j>ローカルサーバ Wot IG</span>
-	<span class=e>Local server Wot Interest Group</span>
+	<span class=e>Local server: WoT Interest Group</span>
 </ul>
 </section>
 

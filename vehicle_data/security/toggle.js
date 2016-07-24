@@ -22,7 +22,7 @@
 		  switch ( location.hash ) {
 			  case '#j': toggle = createToggle(2); break;
 			  case '#e': toggle = createToggle(1); break;
-			  default: toggle = createToggle(0); break;
+			  default: toggle = createToggle(1); break;
 		  };
 		  toggle();
 		  document.body.addEventListener('keydown', function(e) {
