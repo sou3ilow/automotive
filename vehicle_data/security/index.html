@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <title>Security and Privacy Consideration on Vehicle APIs</title>
+  <title>Security and Privacy Consideration for Vehicle APIs</title>
   <!--<title>Vehicle APIsのセキュリティーとプライバシー</title>-->
     <meta charset='utf-8'>
     <script src='https://www.w3.org/Tools/respec/respec-w3c-common'
@@ -197,8 +197,8 @@ Vehicle Data Specification,
 and Vehicle Information Service Specification)</i>.
 
 This document supposes an IVI (In-Vehicle Infotainment system), 
-and presents typical architectures, recommendation to be referred and privacy protection.
-It also describes best practices for restricting API use for specific developers or application
+and presents a typical architecture, recommendation to be referred and privacy protection.
+It also describes best practices for restricting API use to specific developers or application
 
 <p class=j>
 なお、本項は網羅的なリスク評価を行うものではないことに留意する。
@@ -262,7 +262,7 @@ an indirect interface that obtains sensor data or changing values by sending req
 In ordered to investigate domain specific issues that may be caused by these non PC-oriented APIs,
 <i>Security and Privacy Task Force</i> was formed under the working group and business group.
 
-This document reports the result of the study by this task force.
+This document reports the result of the task force's study.
 
 <!-- 章構成 -->
 <p class=j>
@@ -276,17 +276,17 @@ This document reports the result of the study by this task force.
 5節では最初に抽出した課題への対処方針を示す。
 6節にはwebと車、セキュリティとプライバシーに関連して現在取り組まれている活動を紹介する。
 <p class=e>
-Primary concern of car is the safety of passengers.
-Vehicle APIs or IVI that implements the API should not be harmful to this safety.
+Primary concern of automakers is the safety of passengers.
+Vehicle APIs or IVI that implements the APIs should not compromise safety.
 Hence, this document focuses on not only API implementation but also IVI design.
 
 Document structure is as follows: 
 Section 2 lists up API use cases and concerns that the task force has collected.
 Before discussing each concern, section 3 provides a model architecture of IVI,
-its environment and composition of Web runtime and applications.
-And section 4 introduces fundamental Web security technologies which are commonly supported on today's browser
+IVI environment and composition of the web runtime and applications.
+And section 4 introduces fundamental web security technologies which are commonly supported on today's browser
 and should be supported on IVI as well.
-Then section 5 extracts requirements from the use cases and shows strategies to tackle on them.
+Then section 5 extracts requirements from the use cases and shows strategies to tackle them.
 Finally, section 6 gives an overview of on-going activities that are taken for web, automotive, security and privacy.
 
 
@@ -300,13 +300,13 @@ Finally, section 6 gives an overview of on-going activities that are taken for w
 そういった観点では、以下に示す規格を参照することを勧める。
 
 <p class=e>
-This document focuses on security and privacy concerns and provides strategies to tackle on them.
+This document focuses on security and privacy concerns and provides strategies to tackle them.
 It does not provide a certain risk assessment or
-endorses that conformance to this document solves a concern.
+endorses that conformance to this document solves thease concerns.
 Implementer should perform a precise risk assessment and must err on the side of caution.
 
 Also this document does not provide hardware requirements nor an entire design of IVI.
-For these purpose, we recommend to refer following specifications:
+For these purpose, we recommend to refer more general specifications:
 <ul>
 	<li>
 	<span class=j>
@@ -316,14 +316,14 @@ For these purpose, we recommend to refer following specifications:
 	<span class=e>
    	[[ISO26262]]
 	is an international standard for functional safety of electronic system in automobiles.
-	As a part of an automobile IVI must function well</span>
+	As a part of an automobile IVI must function well.</span>
 	<li>
 	<span class=j>
 	[[ISOIEC15408]]
    	は通称CCと呼ばれる、コンピューター・セキュリティーのための国際規格である。
 	IVIは情報システムとして、不正な利用を排除しなくてはならない。 </span>
 	<span class=e>
-	[[ISOIEC15408]]
+	[[ISOIEC15408]],
 	known as Common Criteria, is an international standard for computer security.
 	As an information processor IVI must reject illegal access.</span>
 	<ul>
@@ -427,14 +427,23 @@ explicitly marked as non-normative, examples, and notes. [[!RFC2119]]</p>
 <p class=j>
 Automotive WGではVehicle APIsの策定の仮定で、将来的な拡張を含めどのようなユースケースが想定され、
 また懸念される事項が何であるか調査を行った。下記はそのリストである。
-<span class=todo>この章の記載自体は自由な発想に基づくもので、requirementsでも実現可能でも無いことを注記しておくべきか。</span>
 
 <p class=e>
 On the process of Vehicle APIs formulation,
 Automotive WG has investigated use cases and concerns
-that would be brought by current APIs or their future revisions.
+that would be brought by current APIs or the future revisions.
+Following is the summarized item list.
 
-Following is the summarized item list:
+
+<p class=j>
+これらのアイテムはコネクティッドカーに対する自由な期待に基づくものであり
+規格としての要求事項を定めるものではない。
+また API 規格が各項目の実現性を保証するものでもないことに注意する。
+
+<p class=e>
+Note that the items come from free expectation for connected car and
+does not define requirements. Also API specifications does not guarantee
+that each item is feasible.
 <ol>
 <!--<li>
 	<span class=j>侵入・攻撃への対策</span>
@@ -447,7 +456,8 @@ Following is the summarized item list:
 <span class=j><b>不正侵入の通知</b>
 車両が不正に侵入された場合運転者または所有者にそれが知らされること。</span>
 <span class=e><b>Intrusion Alert</b>
-Driver/Owner wants to be alerted if their car is intruded</span>
+	Driver/Owner wants to be alerted if their car is intruded.
+</span>
 </li>
 
 <li>
@@ -455,7 +465,8 @@ Driver/Owner wants to be alerted if their car is intruded</span>
 <span class=j><b>排他的な操作</b>
 運転中他の利用者はログインも車の制御も出来ないこと。</span>
 <span class=e><b>Exclusive Control</b>
-During the driving, prevent other users from login and controlling the vehicle</span>
+	During the driving, prevent other users from login and controlling the vehicle.
+</span>
 </li>
 
 <!--
@@ -534,7 +545,7 @@ During the driving, prevent other users from login and controlling the vehicle</
 <span class=j><b>ホームセキュリティとの連携</b>
    	車両のセンサー、カメラを家庭のセキュリティアラームシステムへの入力として利用できる。 </span>
 <span class=e><b>Home Security**</b>
-   	Sensors and cameras in the car are included in the set of sensors providins input to customer (and e.g. neighbours) home security alarm. </span>
+   	Sensors and cameras in the car are included in the set of sensors providing input to customer (and e.g. neighbours) home security alarm. </span>
 <span class=note>
 	To do this the vehicle and home alarm system will need to mutually authenticate
 	so that home alarm trusts inputs and customer's vehicle only provides input to alarm system(s)
@@ -648,7 +659,7 @@ and lets a user control it via touch screen. (Even set API is not recommended)
 <span class=note>2.(28)</span>
 <span class=j><b>車外からのシート設定</b>
 ***</span>
-<span class=e><b>Remote Sheet Configuration</b>
+<span class=e><b>Remote Seats Configuration</b>
  Driver would like to configure seat settings remotely.
 </span></li>
 
@@ -822,14 +833,15 @@ Ted a tall driver of the family car approaches the car and the seat adjusts to h
 </span></li>
 -->
 
+<!--
 <li>
 <span class=note>3.(44)</span>
 <span class=j><b>バッテリー低下の検出</b>
 ***</span>
 <span class=e><b>Low Battery Event</b> 
 	Diagnostics application is monitoring battery voltage for the event where it drops below a specific voltage.
-	<!--Event monitoring.-->
 </span></li>
+-->
 
 <li>
 <span class=note>3.(45)</span>
@@ -911,7 +923,8 @@ Family is travelling in vehicle and all passengers are identified.
 <span class=note>6.(38)</span>
 <span class=j><b>料金の支払い</b>***</span>
 <span class=e><b>Toll Payment</b> 
-Driving across toll bridge the responsible party is identified and payment from their account is made.  Could apply to any 3rd party vendor.
+	Driving across toll bridge or parking at a charged space, the responsible party is identified and payment from their account is made.
+	<!--Could apply to any 3rd party vendor.-->
 </span></li>
 
 
@@ -1133,7 +1146,7 @@ IVIのシステム全体として対策を検討する必要があることが�
 
 その上で、ユースケースを整理して得られた課題について対処方針を検討する。
 <p class=e>
-As described above, it was turned out that
+As described above, 
 the expectations are not limited to Web APIs
 and the concerns should be treated in IVI system rather than API implementation.
 
@@ -1212,7 +1225,7 @@ IVI全体として解決してゆく必要があることがはっきりした�
 より詳細なモデルは例えば[[GENIVI]]や[[AGL]]が提供している。<span class=todo>AGLの方のモデル図</span>
 <p class=e>
 This section provides a model architecture that Vehicle APIs expect.
-The readers could refer more precise architecture from [[GENIVI]] or [[AGL]].
+The readers could refer [[GENIVI]] or [[AGL]] for more precise architecture.
 
 <!-- 環境とアプリケーションの制限 -->
 <p class=j>
@@ -1482,7 +1495,7 @@ to prohibit unnecessary accesses in both of physical and logical ways.
 
 Vehicle Information Service Specification has a model architecture where a request is passed from
 application to car through several modules.
-These multi step architecture makes harder that a code behaves maliciously.
+The multi step architecture makes it harder for a maliciouse code.
 
 <!-- アップデートの必要性 -->
 <p class=j>
@@ -1497,7 +1510,7 @@ IVIの開発者はそれらの情報をもとに、 OSを含めたアップデ�
 を利用してもよい。
 
 <p class=e>
-System update is critically important to keep system soundness.
+System update is critically important to keep system safe from maliciouse attacks.
 Once a security hole is reported, system must be updated as soon as possible.
 
 [[CVE]]
@@ -1545,11 +1558,9 @@ Webアプリケーションは、ローカルのファイルにアクセス出�
 しばしばあり、それらの脆弱性をついたウイルス感染などがあった。<!-- TODO 本当か -->
 <p class=e>
 Generally, the capability of web application is restricted; for instance it does not have access to local files.
-It is difficult to let a web application attack system compared to native application.
+It is difficult for a web application to attack a system compared to  anative application.
 On the other hand, web runtime itself is a huge and complicated software and
 it has had vulnerabilities such as implementation bugs or memory corruption on its plug-in.
-
-
 
 <!-- 信頼のおけるアプリケーション配布もと -->
 <p class=j>
@@ -1583,7 +1594,7 @@ Proxy server approach does not need to change web runtime and it can be independ
 IVIのセキュリティはそれらへの依存が少ない形で構成されることが必要である。
 <p class=e>
 There has been several security research that successfully attack car system from remote.
-In these study, vulnerabilities of modules around IVI became first step of the attacks.
+In these studies, vulnerabilities of modules around IVI became first step of the attacks.
 These modules include wireless access points equipped on car,
 faked cellular station and cloud servers that authentication have a problem.
 IVI security should be designed to have less dependency on these modules.
@@ -1758,14 +1769,14 @@ This section discusses the ways to control API access by developers.
 <!-- 伝統的なアクセスコントロール -->
 <p class=j>
 通常DOM APIは実装者が開示したものを、開発者が使用する形式が標準的である。
-デスクトップ向けのブラウザでは現在時刻やマウスポインタの位置の情報取得、
+デスクトップ向けのブラウザでは現在時刻やユーザーの入力、
 ページのスクロールなどを開発者は自由に利用できる。
 この様な無制限のAPI利用は利用者に不便をもたらしたり、プライバシー上の懸念があったりすることなどを理由に
 GPS情報の取得など一部のAPIはユーザーのパーミッションを設けられている。
 <p class=e>
 Normally, implementers provide a DOM API and developers utilize it.
 There is no limitation for use of the API, so developers freely have access to
-current time, position of mouse pointer, page scroll etc.
+current time, user input events, page scroll etc.
 This unlimited API use can cause user inconvenience or privacy risk, 
 so some API such as Geo-location API requires user's permissions.
 
@@ -2095,7 +2106,7 @@ DNTを含め、緊急時におけるプライバシーの保護の例外は、�
 <p class=e>
 Including DNT, exceptions for privacy protection is not implicitly allowed.
 A questioners performed by the task force shows that there are non-negligible number of people does not want to
-provide their privacy even if they are in an emergent situation.
+provide their privacy information even if they are in an emergent situation.
 Service provider should have explicit agreement for use of private data.
 
 <!--
@@ -2149,11 +2160,16 @@ others cannot see the preference.
 IVIは、個人向けに設定される情報がある場合には、それら複数の運転者それぞれのプライバシーが守られるよう配慮すべきである。
 個人毎に切り替えられるべき情報の例を以下に示す。
 <p class=e>
-A driver would have multi cars and a car would have multi drivers. For the latter case, the drivers could be family
+A driver would have number of cars and a car would have multi number of drivers. For the latter case, the drivers could be family
 or could be collogues. IVI, therefore, should keep their private data in secret not to be seen from other drivers if IVI
 treat users preferences. Personal information includes followings:
 
 <ol>
+	<li>
+		<span class=j>訪れた場所、通過した道路、同乗者の数などの走行に関する情報。</span>
+		<span class=e>Trip information such as places visited, roads taken, number of passengers</span>
+	</li>
+
 	<li>
 		<span class=j>フォームに入力したパスワード、索語等のデータ</span>
 		<span class=e>Password or serched word inputted on form</span>
